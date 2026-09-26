@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- THING THAT LINKS THE PYTHON ((PYSCRIPT)) -->
+    <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
+    <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+
+    <py-config>
+        packages = ["jellyfish", "numpy"]
+
+        [[fetch]]
+        from = "py"
+        files = ["main.py", "addModule.py"]
+
+    </py-config>
+    <!--        
+     [[fetch]]
+    files = ["py/main.py"] -->
+</head>
+<body>
+    <h1>FirmFlow</h1>
+
+</body>
+</html>

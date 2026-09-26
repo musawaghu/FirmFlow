@@ -1,0 +1,16 @@
+:root{
+    --white: #fff;
+    --black: #000;
+    --primary-color: orange;
+}
+
+@font-face {
+    font-family: 'font';
+    src: url('') format('truetype');
+}
+
+body {
+
+}
+
+/* DIVIDE THE SECTIONS! */
