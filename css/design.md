@@ -4,6 +4,8 @@
 **Audience:** Employees and HR/admin staff, internal use only
 **Aesthetic:** Black-and-white foundation with a tight, controlled band of red-orange accents. Flat by default, hard edges, thick black rule lines. No decorative rounding — the only softness in the whole system is a small hover-triggered radius on filled elements.
 
+This file is the working source of truth for the core portal design. The brand system and page structure are being built out progressively and should remain consistent as backend-driven screens are added.
+
 This file is the single source of truth for color, type, borders, icons, and layout. Every value a component needs should come from the `:root` variables defined here — no ad hoc hex codes, no ad hoc font names, no one-off border declarations anywhere else in the codebase.
 
 ---
@@ -176,7 +178,18 @@ If `--border-buttons` is changed to `none`, every button in the system loses its
 
 ---
 
-## 6. Component Patterns
+## 6. Module Folder Pattern
+
+The modules screen is intentionally treated as a folder-style workflow rather than a document archive. Use a multi-tab layout when the user is moving between functionally grouped module states such as `Started`, `In progress`, and `Completed`.
+
+**Pattern rules:**
+- The tab row sits flush against the top of a larger, bordered content shell.
+- The active tab uses the same outer border but a lighter inner surface so it feels like the current folder page.
+- The body beneath the tabs is a single panel containing the list of modules, not a table or side-detail rail.
+- Keep the shell light and quiet, with the actual module cards carrying the hierarchy and status cues.
+- Tabs and module cards remain flat and black-and-white; only the status badges and primary action buttons use the orange accent.
+
+This pattern is designed for onboarding, training, and compliance workflows where the user is filtering by progress state rather than browsing a library of records.
 
 ### Buttons
 - Flat rectangle, `border-radius: var(--radius-flat)`, `border: var(--border-width) var(--border-buttons) var(--border-color)`.
