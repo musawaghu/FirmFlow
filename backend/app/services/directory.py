@@ -13,6 +13,7 @@ from datetime import date, datetime, time
 from urllib.parse import quote
 from zoneinfo import ZoneInfo
 
+from app.config import get_settings
 from app.db import Repo, Row
 
 PROJECT_ROLES = [
@@ -127,7 +128,8 @@ class Directory:
     # -- cards --------------------------------------------------------------
 
     def today(self) -> date:
-        return datetime.now(ZoneInfo(self.firm.get("timezone") or "UTC")).date()
+        pinned = get_settings().demo_date
+        return pinned or datetime.now(ZoneInfo(self.firm.get("timezone") or "UTC")).date()
 
     def default_contact_id(self) -> str | None:
         pid = self.firm.get("default_contact_id")
