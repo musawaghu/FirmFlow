@@ -18,6 +18,8 @@ SUBTITLE Rev. 3 (2017) - partially updated 2021, 2024. PLEASE DO NOT PRINT.
 10. Harassment Prevention
 11. Misc / FAQ
 
+Added 2024: 12. Your First Weeks, 13. Design Values, 14. Communication, 15. Organization Chart, 16. File Naming & Folder Structure, 17. Billing Your Hours, 18. Expense Reports, 19. Office Layout, 20. Benefits
+
 PAGEBREAK
 
 # 1. Welcome
@@ -369,3 +371,194 @@ A: Coming soon!
 
 Q: What if I get hurt at work or on a site?
 A: Tell your PM and the Office Manager right away, and fill out an incident report the same day.
+
+PAGEBREAK
+
+# 12. YOUR FIRST WEEKS
+
+Your first two weeks are about getting set up, meeting people, and learning how we work. You are not expected to be fully productive yet. The Studio Coordinator (Fatima Noor) will send you an onboarding schedule before your first day.
+
+## Your first day
+
+- Pick up your key card from the Office Manager (Priya Raman) at reception.
+- Meet the IT Support Specialist (Jordan Pike) to set up your computer, email, and Microsoft Teams accounts.
+- Meet your Project Manager, who will introduce you to your project team and show you the project page on SharePoint.
+- Fill out the Direct Deposit Authorization form and return it to the Payroll & Accounting Manager.
+
+## Your first week
+
+- Meet with the Studio Coordinator to go over your onboarding schedule and required trainings.
+- Complete the Revit orientation with the BIM Manager (Samir Haddad) before working in any project model.
+- Complete the model shop safety training if you will be building physical models.
+- Submit your first timesheet.
+
+## Your first 30 days
+
+- Complete harassment prevention training.
+- Enroll in benefits (see Section 20).
+- Attend at least one Thursday design review.
+
+If you are not sure what to do next, ask the Studio Coordinator.
+
+# 13. DESIGN VALUES
+
+These are the values we use to judge our own work in design reviews and on every project.
+
+- Design for the community. Our buildings are public places. We design for the people who will use them every day, not only for the client who pays for them.
+- Make it last. We choose durable materials and simple, flexible plans so our buildings can serve for decades and adapt as needs change.
+- Build it right. A good idea is only as good as its drawings. Clear, coordinated documents are part of good design.
+- Sustainability is the baseline. Every project starts with daylight, energy use, and embodied carbon, not as an add-on at the end.
+- Work in the open. Pin up early, share unfinished work, and invite critique. The best ideas in this studio have come from people who were not on the project.
+
+PAGEBREAK
+
+# 14. COMMUNICATION
+
+We use a few tools, each for a different job. Using the right one keeps important messages from getting lost.
+
+| Tool | Use it for |
+| Microsoft Teams chat | Quick questions and day-to-day conversation with your team |
+| Teams project channels | Project discussion, decisions, and file links for one project |
+| Teams #studio-general | Studio-wide announcements, events, and office notices |
+| Teams #bim-help | Revit and BIM questions; the BIM team monitors it |
+| Email | Anything that goes to clients, consultants, or contractors |
+| Desk phone | Calling someone in the office by their 3-digit extension |
+
+Each project has its own Teams channel, named with the project number and name (for example, RL-2301 Riverside Library). Your PM will add you to the channels for your projects.
+
+All client and consultant communication goes by email, and your PM or Project Architect should be copied on every message. Do not send project decisions to clients through Teams.
+
+The whole studio meets every Monday at 10:30 AM in the main conference room for a 30-minute studio update. Remote staff join on Teams.
+
+# 15. ORGANIZATION CHART
+
+Studio Meridian is led by two principals. Every team reports up to one of them.
+
+| Name | Title | Reports to |
+| Dana Whitfield | Managing Principal | - |
+| Marcus Oyelaran | Design Principal | Dana Whitfield |
+| Priya Raman | Office Manager | Dana Whitfield |
+| Elena Kowalski | HR Manager | Dana Whitfield |
+| Fatima Noor | Studio Coordinator | Priya Raman |
+| Tom Brennan | Payroll & Accounting Manager | Dana Whitfield |
+| Grace Liu | Accounting Specialist | Tom Brennan |
+| Samir Haddad | BIM Manager | Marcus Oyelaran |
+| Keiko Tanaka | BIM Coordinator | Samir Haddad |
+| Luis Ortega | IT Manager | Dana Whitfield |
+| Jordan Pike | IT Support Specialist | Luis Ortega |
+| Hannah Morrow | Senior Project Manager | Dana Whitfield |
+| Victor Hale | Project Manager | Hannah Morrow |
+| Rachel Adeyemi | Design Manager | Marcus Oyelaran |
+| Omar Siddiqui | Design Manager | Marcus Oyelaran |
+| Ben Castillo | Project Architect | Hannah Morrow |
+| Chloe Bennett | Senior Designer | Rachel Adeyemi |
+| Nate Olsen | Architectural Designer | Rachel Adeyemi |
+| Alex Rivera | Architectural Intern | Rachel Adeyemi |
+| Jamie Cho | Architectural Intern | Omar Siddiqui |
+
+On a project, you work for that project's Project Manager, whoever you report to on this chart. The project page on SharePoint lists each project's team.
+
+PAGEBREAK
+
+# 16. FILE NAMING & FOLDER STRUCTURE
+
+## Project folders
+
+Every project has one folder on the project server: \\SM-FS02\Projects\<project number>\. Each project folder has the same subfolders:
+
+| Folder | What goes in it |
+| Admin | Proposals, fee, schedule, and meeting minutes |
+| Contracts | Signed agreements and amendments (PM and principals only) |
+| Correspondence | Saved emails, letters, and transmittals |
+| Design | Sketches, diagrams, renderings, and presentation files |
+| BIM | Revit models: Central, Sandbox, and Links subfolders |
+| CAD | CAD backgrounds and files received from consultants |
+| Issued | Every drawing set that leaves the studio, one subfolder per issue |
+| Photos | Site and existing-conditions photos |
+
+Do not create new top-level folders in a project folder. If you are not sure where a file belongs, ask the Project Architect.
+
+## File names
+
+Name working files: <project number>_<description>_<your initials>. Use hyphens inside the description and underscores only between the three parts. Do not use spaces. For example: RL-2301_Lobby-Study_AR.skp or RL-2301_Option-B_AR.rvt.
+
+Name issued sets: <project number>_<set name>_<date>, with the date written YYYY-MM-DD. For example: RL-2301_CD-Set_2024-03-15.pdf.
+
+- Never add "final" or "new" to a file name. Use the date or ask the Project Architect.
+- Do not rename a file after it has been issued.
+- Central models are named by the project BIM Lead. Do not rename them.
+
+# 17. BILLING YOUR HOURS
+
+Studio Meridian bills most clients by the hour, so the hours on your timesheet become the client's invoice. Charge your time to the project and phase you actually worked on.
+
+## Phase codes
+
+| Code | Phase |
+| SD | Schematic Design |
+| DD | Design Development |
+| CD | Construction Documents |
+| CA | Construction Administration |
+| AS | Additional Services |
+
+Charge time to AS only when your PM tells you the client has approved the additional service in writing. Work on a change the client has not approved still goes to the project's current phase, and you should tell your PM.
+
+## Billable and non-billable time
+
+- Billable time is work on a project for a client: design, drawings, models, meetings, and site visits for that project.
+- Non-billable time goes to an overhead code (see Section 6), for example studio meetings, trainings, and proposals.
+- Travel to a site for a project is billable to that project. Your regular commute is not.
+- If you worked on two projects in one day, split your hours between them. Do not put the whole day on one project.
+
+Your PM reviews every project's hours against its budget each month. If you think a task will take much longer than planned, tell your PM early.
+
+PAGEBREAK
+
+# 18. EXPENSE REPORTS
+
+You can be reimbursed for business expenses you pay for yourself, such as mileage to a job site, parking at a client meeting, or printing at an outside shop. Expenses for a project are charged to that project so they can be billed to the client.
+
+How to submit an expense report:
+
+1. Keep the receipt. Take a photo of paper receipts right away.
+2. In Deltek Vantagepoint, open Expenses and create a new expense report.
+3. Add a line for each expense with the date, amount, project number, and a short description.
+4. Attach a receipt for every expense over $25.
+5. For mileage, enter the miles driven and the start and end addresses. Vantagepoint calculates the amount.
+6. Submit the report. Your PM approves it.
+
+Submit expenses within 30 days of the purchase. Approved expenses are reimbursed in your next paycheck.
+
+Anything over $250, and any software, equipment, or travel, needs your PM's approval before you buy it. Questions go to Grace Liu (Accounting Specialist).
+
+# 19. OFFICE LAYOUT
+
+The studio takes up the whole third floor. Your key card opens the front door and the studio floor.
+
+| Area | Where | What it's for |
+| Reception | By the elevators | Visitors, mail, and deliveries. The Office Manager sits here. |
+| Main conference room | Next to reception | Client meetings, Monday studio updates, and Thursday design reviews |
+| Studio floor | Center of the floor | Desks, grouped by project team |
+| Library and quiet area | North side | Material samples, reference books, and focused work |
+| Phone rooms | Along the east wall | Calls and small Teams meetings; no booking needed |
+| Plot room | Behind the studio floor | Plotters, printers, and paper |
+| Model shop | South corner | Laser cutter and power tools; shop training required |
+| Kitchen | West side | Coffee, lunch, and the refrigerator |
+| Supply room | Next to the kitchen | Office supplies, and hard hats and safety vests for site visits |
+
+Your desk is assigned by the Office Manager and may move when project teams change. Ask the Office Manager for supplies or if something in the office needs fixing.
+
+# 20. BENEFITS
+
+Full-time employees are eligible for benefits starting the first day of the month after their start date. You must enroll within 30 days of your start date. If you miss the enrollment window, you have to wait for open enrollment in November unless you have a qualifying life event.
+
+- Health insurance: two medical plans to choose from. The studio pays 90% of the premium for employees and 50% for dependents.
+- Dental and vision insurance.
+- 401(k) retirement plan. The studio matches 100% of what you contribute, up to 4% of your salary.
+- Flexible spending account (FSA) for health care costs.
+- Licensure support: the studio pays for each ARE exam division you pass and your AIA membership dues.
+- Continuing education: up to 16 hours a year of paid time for approved courses. Record them with the OH-TRAIN code.
+
+Enroll in the HR portal: https://hr.studiomeridian.example/portal. Part-time employees and interns should ask the HR Manager which benefits they are eligible for.
+
+Questions about benefits go to the HR Manager (Elena Kowalski).

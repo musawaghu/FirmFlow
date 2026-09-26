@@ -70,6 +70,8 @@ def test_number_words_and_digits_match():
 def test_list_markers_are_not_facts():
     content = "1. Open your timesheet.\n2. Add a line for each project.\n3. Enter your hours."
     assert spans(p(content)) == []
+    bold = "**1.** Open your timesheet.\n\n**2.** Add a line for each project.\n\n**3.** Enter your hours."
+    assert spans(p(bold)) == []
 
 
 def test_changed_or_invented_links_are_flagged():

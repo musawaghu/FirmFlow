@@ -87,7 +87,7 @@ def test_sample_contradictions_survive(sample):
 
 def test_pdf_page_numbers_and_cleanup():
     parsed = parse_manual((SAMPLES / "studio_meridian_manual.pdf").read_bytes(), "pdf")
-    assert parsed.page_count == 15
+    assert parsed.page_count == 22
     text = "\n".join(s.content for s in parsed.sections)
     assert "Employee Handbook | Page" not in text  # running footer removed
     assert "ﬀ" not in text and "ﬁ" not in text  # ligatures expanded

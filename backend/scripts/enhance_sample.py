@@ -19,12 +19,13 @@ from app.services.parser import parse_manual
 
 SAMPLE = Path(__file__).resolve().parents[2] / "samples" / "studio_meridian_manual.pdf"
 DEMO_MODULES = [
-    "Timesheets",
-    "Staff Directory",
-    "Company Policies & Workplace Etiquette",
-    "How to Use BIM",
-    "PTO",
-    "Privacy & Harassment Training",
+    "Welcome to Studio Meridian: general onboarding, the studio and its work, and your first weeks",
+    "Company Culture & Handbook: design values, communication channels, organization chart",
+    "Policies: office policies and etiquette, confidentiality and privacy, harassment prevention",
+    "Technology Guide & Training: BIM software and standards, file naming conventions, folder structure",
+    "Operations: timesheets, billing your hours, expense reports",
+    "Company People: staff directory and key contacts, office layout",
+    "Payroll & Benefits: payroll, benefits, paid time off, holidays",
 ]
 PRICE_PER_MTOK = {"claude-opus-5": (5.00, 25.00)}
 

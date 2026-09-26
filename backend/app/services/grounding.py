@@ -134,7 +134,7 @@ UNC_RE = re.compile(r"\\\\[^\s`]+")
 DRIVE_RE = re.compile(r"\b[A-Za-z]:\\[^\s`]*")
 GOLINK_RE = re.compile(r"\bgo/[\w-]+")
 NUMBER_RE = re.compile(r"(?<![\w.])\d+(?:[.,:]\d+)*")
-LIST_MARKER_RE = re.compile(r"^(\s*)\d+[.)]\s", re.MULTILINE)
+LIST_MARKER_RE = re.compile(r"^(\s*)(?:\*\*|__)?\d+[.)](?:\*\*|__)?\s", re.MULTILINE)  # "2. " or "**2.** "
 TRAILING_PUNCT = ".,;:!?)"
 
 NUMBER_WORDS = {

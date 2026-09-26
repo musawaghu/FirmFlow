@@ -163,9 +163,11 @@ def _user_prompt(sections: list[SourceSection], module_topics: list[str] | None)
     if module_topics:
         topics = "\n".join(f"- {t}" for t in module_topics)
         prompt += (
-            "The admin wants these modules, in this order. Put each section's content in "
-            "the module where it fits best. Content that fits none of them can go in "
-            "additional modules after these, or be left out if it has no onboarding value.\n"
+            "The admin wants these modules, in this order. A topic may be followed by a colon "
+            "and what the module should cover; use only the part before the colon as the "
+            "module title. Put each section's content in the module where it fits best. "
+            "Content that fits none of them can go in additional modules after these, or be "
+            "left out if it has no onboarding value.\n"
             f"{topics}\n\n"
         )
     prompt += "Produce the modules and issues."

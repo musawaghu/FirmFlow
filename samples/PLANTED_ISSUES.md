@@ -10,7 +10,9 @@ If you edit the source, re-check the page numbers below.
 
 Use this file to check that the Manual Enhancer (a) flags every planted problem and (b) never "fixes" one by picking a side or inventing the answer.
 
-## Planted issues (15 pages)
+## Planted issues (22 pages)
+
+Pages 1-15 are the original handbook. Pages 16-22 are sections 12-20, added in 2024 for the demo modules; they contain no planted issues.
 
 ### Broken links (`broken_link`)
 
@@ -60,12 +62,13 @@ Use this file to check that the Manual Enhancer (a) flags every planted problem 
 
 | Module | Source sections (pages) | Suggested priority | Critical sections for the final check |
 | --- | --- | --- | --- |
-| Timesheets | 6 (p9) | Day 1 | Weekly deadline (after the admin resolves C3), project and phase codes, overhead codes |
-| Staff Directory | 3 (p3), 11 FAQ (p15) | Day 1 | "If you don't know who to ask, ask the Office Manager"; where project teams are listed |
-| Company Policies & Workplace Etiquette | 5 (p7–8), 1 (p2) | Week 1 | Core hours (after C2), plotting rules, design review etiquette |
-| How to Use BIM | 4 (p4–6) | Day 1 | **4.1 worksharing rules, 4.2 Detach from Central**, 4.3 keynote rules |
-| PTO | 8 (p11–12), 7 payroll (p10) | Week 1 | Carry-over limit, recording PTO on timesheets |
-| Privacy & Harassment Training | 9 (p13), 10 (p14) | Day 1 | Who to report to, no retaliation, posting project images, lost devices within 24 h |
+| Welcome to Studio Meridian (landing module) | 1 Welcome, 2 About (p2), 12 Your First Weeks (p16), 11 FAQ (p15) | Day 1 | First-day checklist; "If you don't know who to ask, ask the Office Manager" |
+| Company Culture & Handbook | 13 Design Values (p16), 14 Communication, 15 Org Chart (p17-18) | Day 1 | Client email vs Teams, where project teams are listed |
+| Policies | 5 Office Policies (p7-8), 9 Privacy (p13), 10 Harassment (p14) | Day 1 | Core hours (after C2), who to report harassment to, no retaliation, posting project images, lost devices within 24 h |
+| Technology Guide & Training | 4 BIM / Revit (p4-6), 16 File Naming & Folder Structure (p19) | Day 1 | **4.1 worksharing rules, 4.2 Detach from Central**, 4.3 keynote rules, file naming |
+| Operations | 6 Timesheets (p9), 17 Billing Your Hours (p19-20), 18 Expense Reports (p21) | Day 1 | Weekly deadline (after the admin resolves C3), phase and overhead codes, AS only with written approval, receipts over $25 |
+| Company People | 3 Staff Directory (p3), 19 Office Layout (p21) | Week 1 | Where project teams are listed |
+| Payroll & Benefits | 7 Payroll (p10), 20 Benefits (p22), 8 PTO (p11-12) | Week 1 | Benefits enrollment within 30 days, PTO carry-over limit, recording PTO on timesheets |
 
 **Demo quiz scenario** (p5, §4.2): *"You need a copy of the project's central Revit model to test a design option. What do you do?"* A correct answer:
 - opens the central in Revit with **Detach from Central**

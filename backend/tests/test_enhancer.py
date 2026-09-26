@@ -113,8 +113,9 @@ def test_prompt_lists_sections_with_ids_and_pages():
 
 
 def test_prompt_includes_module_topics():
-    prompt = _user_prompt(SECTIONS, ["Timesheets", "PTO"])
-    assert "- Timesheets\n- PTO" in prompt
+    prompt = _user_prompt(SECTIONS, ["Timesheets", "Payroll & Benefits: payroll, PTO"])
+    assert "- Timesheets\n- Payroll & Benefits: payroll, PTO" in prompt
+    assert "only the part before the colon as the module title" in prompt
 
 
 # ---------------------------------------------------------------------------
