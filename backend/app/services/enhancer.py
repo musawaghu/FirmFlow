@@ -55,7 +55,9 @@ class DraftIssue(BaseModel):
     source_section_id: int = Field(description="id of the section containing the excerpt")
     excerpt: str = Field(description="Exact quote from that section showing the problem")
     related_section_id: int | None = Field(description="For contradictions: id of the conflicting section, else null")
-    description: str = Field(description="What is wrong, for the admin. Do not propose a corrected value.")
+    description: str = Field(
+        description="What is wrong, for the admin. Name sections by heading, never by id. Do not propose a corrected value."
+    )
 
 
 class Enhancement(BaseModel):
@@ -116,7 +118,9 @@ report it.
 
 ## Issues to report
 - broken_link: a link, file path, or reference that the manual itself shows is \
-dead, retired, moved, or a placeholder (for example "TBD" or "old link").
+dead, retired, moved, or a placeholder (for example "TBD" or "old link"), or that \
+is inconsistent with the manual's other references (for example a file path on a \
+server that no other path in the manual uses).
 - outdated_reference: software, systems, versions, or materials the manual itself \
 shows are superseded, or that are clearly obsolete (for example an old software \
 version when the manual names a newer one).
@@ -127,7 +131,9 @@ in related_section_id; they may be the same section.
 finish it.
 Report each distinct problem once. The excerpt must be copied exactly from the \
 cited section. The description tells the admin what is wrong and where; it must \
-not propose the correct value.
+not propose the correct value. Section ids are internal and the admin never sees \
+them, so never write "section 21" in a description. Name a section by its heading \
+instead (for example "the Timesheets section" or "the PTO FAQ").
 
 ## Priorities
 Suggest a priority for each module; the admin makes the final call.
