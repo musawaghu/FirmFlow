@@ -56,7 +56,7 @@ Contact cards show name, title, email, working hours, and whether the person is 
 
 | Layer | Choice |
 | --- | --- |
-| Frontend | React + Vite, Tailwind CSS, shadcn/ui, react-diff-viewer |
+| Frontend | React + TypeScript + Vite, Tailwind CSS, shadcn/ui, react-diff-viewer |
 | Backend | Python, FastAPI |
 | Database, auth, storage | Supabase (Postgres) |
 | AI | Claude API with tool calling |
@@ -75,11 +75,11 @@ flowchart LR
 
 ## Planned repository structure
 
-The current repo has an early HTML + PyScript prototype (`index.html`, `css/`, `js/`, `py/`). This is the structure we're moving to:
+The repo also has two early prototypes: an HTML + PyScript version (`index.html`, `css/`, `js/`, `py/`) and a Next.js mock-data version (`website-base/`). The backend, database, and sample manual are in place; this is the structure we're moving to:
 
 ```
 firm-flow/
-├── frontend/                 # React + Vite app
+├── frontend/                 # React + TypeScript + Vite app
 │   └── src/
 │       ├── pages/            # Dashboard, Module, FinalCheck, Assistant, Admin/*
 │       ├── components/       # ContactCard, SideBySideReview, ProgressBar, ...
