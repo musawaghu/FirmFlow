@@ -1,0 +1,564 @@
+TITLE Studio Meridian Architects
+SUBTITLE Employee Handbook & Studio Guide
+SUBTITLE Rev. 3 (2017) - partially updated 2021, 2024. PLEASE DO NOT PRINT.
+
+> This handbook is a living document. Some sections may be out of date. If something here doesn't match what your PM tells you, ask. Last full review: March 2017.
+
+## Contents
+
+1. Welcome
+2. About the Studio
+3. Staff Directory & Key Contacts
+4. BIM / Revit
+5. Office Policies & Studio Etiquette
+6. Timesheets
+7. Payroll
+8. Paid Time Off
+9. Confidentiality & Privacy
+10. Harassment Prevention
+11. Misc / FAQ
+
+Added 2024: 12. Your First Weeks, 13. Design Values, 14. Communication, 15. Organization Chart, 16. File Naming & Folder Structure, 17. Billing Your Hours, 18. Expense Reports, 19. Office Layout, 20. Benefits
+
+PAGEBREAK
+
+# 1. Welcome
+
+Welcome to Studio Meridian Architects! We're glad you're here. Whether you are joining us as an intern, a designer, or a licensed architect, you are now part of a studio that has been designing civic, educational, and mixed-use buildings since 1998.
+
+This handbook is meant to help you get settled during your first weeks. It covers how we work, who to talk to, and the policies every employee is expected to follow. Please read it all, but don't worry about memorizing it. You will also meet with the Studio Coordinator during your first week to go over your onboarding schedule.
+
+We believe good buildings come from good teams. Ask questions, pin up your work, and don't be afraid to say "I don't know yet."
+
+- Dana Whitfield, Managing Principal
+
+# 2. About the Studio
+
+Studio Meridian was founded in 1998 by Dana Whitfield and the late Robert Anand. The studio started with four people working out of a converted warehouse and has grown to over twenty staff. Our work focuses on public libraries, K-12 schools, fire and public safety facilities, and mixed-use housing.
+
+We have won several regional design awards, including the 2019 Civic Design Honor Award for the Northgate Branch Library. Current major projects include Riverside Library, Harbor Point Mixed-Use, Cedar Hills Elementary Modernization, and Fire Station 7.
+
+The studio softball team plays Thursday evenings in the summer. Everyone is welcome regardless of skill level. Ask around the studio if you want to join.
+
+PAGEBREAK
+
+# 3. Staff Directory & Key Contacts
+
+The full staff directory with photos, extensions, and project assignments is on the intranet: http://intranet.studiomeridian.example/staff/directory.aspx
+
+NOTE: The intranet was retired during the 2021 move to SharePoint. The current staff list is on the SharePoint "People" page: https://studiomeridian.sharepoint.example/sites/studio/People
+
+To call someone in the office, dial their 3-digit extension from any desk phone. Everyone also uses Microsoft Teams for chat. Please keep your Teams status up to date (Available, Busy, In a Meeting, Away) so people know when they can reach you.
+
+Each project has a project page on SharePoint that lists the project team, including the Principal in Charge, Project Manager, Design Manager, Project Architect, and BIM Lead. If you are not sure who is running a project, check the project page first, then ask the Project Manager.
+
+## Key contacts
+
+| Topic | Contact | Title | Ext. |
+| General questions, building access, supplies, parking | Priya Raman | Office Manager | 110 |
+| Benefits, PTO, HR policies, harassment reports | Elena Kowalski | HR Manager | 111 |
+| Onboarding schedule, trainings | Fatima Noor | Studio Coordinator | 112 |
+| Payroll, direct deposit, W-2 | Tom Brennan | Payroll & Accounting Manager | 120 |
+| Timesheets, expenses | Grace Liu | Accounting Specialist | 121 |
+| BIM standards, Revit, worksharing | Samir Haddad | BIM Manager | 130 |
+| Revit families, keynotes, content library | Keiko Tanaka | BIM Coordinator | 131 |
+| Computers, accounts, printers, plotters | Jordan Pike | IT Support Specialist | 141 |
+| Data security, lost devices | Luis Ortega | IT Manager | 140 |
+| Project staffing and assignments | Hannah Morrow | Senior Project Manager | 152 |
+
+For IT requests, you can also email helpdesk@studiomeridian.example. Requests are answered in the order received.
+
+If you don't know who to ask, ask Priya (Office Manager). She will point you to the right person.
+
+PAGEBREAK
+
+# 4. BIM / REVIT
+
+All production work at Studio Meridian is done in Autodesk Revit 2019. Do not upgrade any project model to a newer version of Revit without approval from the BIM Manager, because an upgraded model cannot be opened by anyone still on the older version.
+
+The Studio Meridian BIM Standards manual is the full reference for templates, naming, worksets, and sheet setup: \\SM-FS01\Standards\BIM\SM_BIM_Standards_v3.pdf
+
+Project files live on the project server under \\SM-FS02\Projects\<project number>\BIM\. The BIM Lead for each project is responsible for the central model. The BIM Manager (Samir Haddad) is responsible for the firm-wide standards, the Revit template, and the content library.
+
+## 4.1 Worksharing and the central model
+
+Every Revit project at Studio Meridian is workshared. That means there is ONE central model on the server, and each person works in their own local copy which is synchronized with the central model. The central model is the single source of truth for the whole team. If the central model is damaged, everyone on the project loses work.
+
+Rules for the central model:
+
+- Never open the central model directly to do your daily work. Always work in a local copy.
+- Never copy, move, or rename a central model using File Explorer (Windows Explorer). A copied central file still thinks it is the central model. If someone opens the copy and syncs, their work goes to the wrong file and the real central model can become corrupted.
+- Never email a central model or put it on a USB drive.
+- Only the project BIM Lead may move, rename, or archive a central model, and only by using Revit's Save As with the "Make this a Central Model after save" option.
+
+To start working on a project each day:
+
+1. Open Revit and go to File > Open.
+2. Browse to the central model in \\SM-FS02\Projects\<project number>\BIM\Central\.
+3. Select the central model and make sure "Create New Local" is checked at the bottom of the Open dialog.
+4. Click Open. Revit creates your local copy in C:\Revit_Local\ with your username added to the file name.
+5. Work in your local copy.
+6. Synchronize with Central at least every hour, and always before lunch and before you leave for the day.
+7. When you close the model at the end of the day, choose "Relinquish all elements and worksets" so your teammates can edit what you were working on.
+
+Do not reuse yesterday's local file. Create a new local every morning.
+
+## 4.2 Making a test copy of a model
+
+Sometimes you need a copy of the project model to study a design option, test a family, or try something out without affecting the team's work. Do NOT copy the central file in File Explorer to do this. Instead:
+
+1. In Revit, go to File > Open and browse to the central model.
+2. Check "Detach from Central" at the bottom of the Open dialog.
+3. When Revit asks, choose "Detach and preserve worksets".
+4. Save the detached model to your project sandbox folder: \\SM-FS02\Projects\<project number>\BIM\Sandbox\ and include your initials in the file name (for example, RL-2301_Option-B_AR.rvt).
+
+A detached model is completely disconnected from the central model. Nothing you do in it can sync back to the team's model. If a design option is approved, talk to the project BIM Lead about bringing it into the central model; do not try to copy elements back yourself.
+
+## 4.3 Keynotes
+
+Studio Meridian uses Revit keynotes to annotate construction documents. Keynotes are short codes that point to a standard note. The keynote file for the whole firm is SM_Keynotes.txt, stored in \\SM-FS02\Standards\Revit\Keynotes\.
+
+How to read a keynote: our keynotes follow CSI MasterFormat. The first six digits are the MasterFormat section number and the suffix after the period is the Studio Meridian variant. For example, in 09 29 00.A1, "09 29 00" is the MasterFormat section for Gypsum Board, and ".A1" is our note "5/8 in. Type X gypsum board". The keynote legend on each sheet lists every keynote used on that sheet with its full text.
+
+Keynote rules:
+
+- Always place keynotes with the Keynote tag (element or material keynotes). Do not type keynote numbers or note text into a plain text note, because typed notes do not update when the keynote file changes.
+- Do not edit SM_Keynotes.txt yourself. If a note is missing or wrong, send the request to the BIM Coordinator (Keiko Tanaka), who maintains the keynote file.
+- Every sheet that uses keynotes must include a keynote legend.
+
+## 4.4 Model practices
+
+- Link CAD files and other Revit models. Do not import them. Never explode an imported CAD file in a project model.
+- Do not create in-place families without approval from the project BIM Lead. Use loadable families from the content library.
+- Put elements on the correct workset. If you are not sure which workset to use, ask your BIM Lead.
+- Keep model warnings under control. Check Manage > Review Warnings before each major issue and fix what you created.
+- Views you create for your own work should start with your initials (for example, AR - Level 2 Study) so they can be cleaned up later.
+
+NOTE (2024): All active projects are now on Revit 2025. Check with Samir before opening an older archived project.
+
+PAGEBREAK
+
+# 5. OFFICE POLICIES & STUDIO ETIQUETTE
+
+## Office hours
+
+The studio is open from 7:00 AM to 7:00 PM, Monday through Friday. Core hours are 10:00 AM to 4:00 PM. All full-time staff are expected to be in the studio or available during core hours unless they have approved time off. Outside of core hours you may set your own schedule with your PM's agreement, as long as you work a full week.
+
+## Dress code
+
+Our dress code is business casual. On days when clients are visiting the studio or you are attending a client meeting, dress a step up. Site visits require closed-toe shoes; hard hats and safety vests are provided by the contractor or can be borrowed from the supply room.
+
+## Workspace
+
+- Keep your desk reasonably tidy. Roll-out drawings at the end of the day and put models away.
+- The quiet area near the library is for focused work. Take calls in a phone room or conference room.
+- Headphones are fine. If you are wearing them, keep Teams open so people can reach you.
+- Please avoid strong-smelling food at your desk.
+
+## Kitchen
+
+Everyone cleans up after themselves. Load your own dishes into the dishwasher. The refrigerator is cleaned out every Friday at 3:00 PM; anything unlabeled will be thrown out.
+
+## Meetings
+
+Be on time for meetings, both in person and on Teams. If you are presenting, have your drawings or screens ready before the meeting starts. Camera on is preferred for internal Teams meetings.
+
+## Design reviews and pin-ups
+
+Studio design reviews are held on Thursdays at 4:00 PM in the main conference room and are led by the Design Principal. Any team can sign up for a slot. Interns are encouraged to attend even if their project isn't presenting. Critique is about the work, not the person: give specific feedback, and receive it without getting defensive.
+
+## Plotting and printing
+
+- Check the plot queue before sending a large job.
+- Pick up your plots right away. Plots left on the plotter overnight will be recycled.
+- Large sets (more than 20 sheets) should be sent after 5:00 PM unless it's a deadline.
+- Use the "Check Set" paper for internal reviews and the bond paper only for client and permit sets.
+
+## Model shop
+
+The model shop has a laser cutter and power tools. You must complete the shop safety training before using any equipment. Never leave the laser cutter running unattended.
+
+## Core hours (reminder)
+
+Core hours are 9:30 AM to 3:30 PM. Please make sure your calendar reflects when you are in the studio.
+
+## Parking and building access
+
+Your key card opens the front door and the studio floor. Lost key cards must be reported to the Office Manager the same day. Parking in the garage is available on a first-come basis; ask the Office Manager about a monthly pass.
+
+PAGEBREAK
+
+# 6. TIMESHEETS
+
+Accurate timesheets are how we bill our clients and how we know if projects are on budget. Every employee, including interns and principals, must submit a timesheet every week. Studio Meridian moved from Deltek Vision to Deltek Vantagepoint in 2022.
+
+Timesheets are due every Friday by 5:00 PM for the current week. Enter your hours every day if you can; it is much easier than trying to remember on Friday.
+
+How to fill out your timesheet:
+
+1. Log in to Deltek Vision from the link on the intranet homepage. (Vision works best in Internet Explorer 11.)
+2. Open the timesheet for the current week.
+3. For each project you worked on, add a line with the project number and the phase code (for example, RL-2301 / CD for Riverside Library, Construction Documents).
+5. Enter your hours for each day on the correct line. Round to the nearest quarter hour.
+6. Your Project Manager reviews and approves timesheets on Monday.
+
+Time that is not billable to a project goes to one of the overhead codes:
+
+| Code | Use for |
+| OH-ADMIN | General office and admin tasks |
+| OH-TRAIN | Trainings, onboarding, and continuing education |
+| OH-MKTG | Proposals and marketing |
+| PTO | Paid time off |
+| HOL | Firm holidays |
+
+Do not charge time to a project you are not assigned to without asking that project's PM first. If you are not sure which project or phase code to use, ask your PM before you submit.
+
+Late timesheets hold up billing for the whole firm. If your timesheet is late, Accounting will contact you and your PM. Repeated late timesheets are addressed in your performance review.
+
+Reminder: all timesheets must be submitted by Monday at 12:00 noon for the previous week.
+
+Questions about the timesheet system, corrections after submitting, or missing project codes go to Grace Liu (Accounting Specialist).
+
+PAGEBREAK
+
+# 7. PAYROLL
+
+Studio Meridian pays employees every other Friday by direct deposit. Your pay is based on your approved timesheets, so a missing or late timesheet can delay your paycheck.
+
+To set up or change your direct deposit, fill out the Direct Deposit Authorization form and return it to the Payroll & Accounting Manager. Changes take one to two pay periods to take effect.
+
+Pay stubs and W-2 forms are available in the HR portal: https://hr.studiomeridian.example/portal
+
+If you think there is a mistake in your paycheck, contact the Payroll & Accounting Manager (Tom Brennan) directly. Please do not discuss pay issues in Teams channels or by group email.
+
+PAGEBREAK
+
+# 8. PAID TIME OFF (PTO)
+
+Studio Meridian provides paid time off (PTO) for vacation and personal time. Sick leave is tracked separately; see the HR Manager for details.
+
+## Accrual
+
+Full-time employees accrue PTO every pay period based on years of service:
+
+| Years of service | PTO per year |
+| 0 - 2 years | 15 days (120 hours) |
+| 3 - 5 years | 18 days (144 hours) |
+| 6+ years | 22 days (176 hours) |
+
+Part-time employees accrue PTO in proportion to their scheduled hours. Interns do not accrue PTO but may request unpaid time off.
+
+You may carry over up to 40 hours of unused PTO into the next calendar year. Any PTO above 40 hours that is not used by December 31 is forfeited.
+
+## Requesting time off
+
+PTO requests must be submitted at least two weeks in advance. For time off longer than one week, please give at least one month's notice. Before you request time off, check your project deadlines; PTO during the two weeks before a major submission may be declined.
+
+How to request PTO:
+
+1. Check your PTO balance in the HR portal.
+2. Talk to your Project Manager about your dates and project coverage.
+3. HR will confirm your approved time off by email.
+4. Put your approved PTO on your Outlook calendar and set your Teams out-of-office message.
+
+When you take PTO, record it on your timesheet with the PTO code.
+
+## Holidays
+
+The studio is closed on the following holidays: New Year's Day, Martin Luther King Jr. Day, Memorial Day, Juneteenth, Independence Day, Labor Day, Thanksgiving Day, the day after Thanksgiving, Christmas Eve, and Christmas Day. Record holidays on your timesheet with the HOL code.
+
+## PTO FAQ
+
+Q: How much PTO do I get in my first year?
+A: New employees accrue 10 days (80 hours) of PTO in their first year.
+
+Q: Can I take PTO before I've accrued it?
+A: Not normally. In special cases, talk to the HR Manager.
+
+Q: How far ahead do I need to request PTO?
+A: At least 5 business days before your time off.
+
+Q: Where is the PTO request form?
+A: go/pto-form (old link - will be updated)
+
+PAGEBREAK
+
+# 9. CONFIDENTIALITY & PRIVACY
+
+As an architecture firm, we are trusted with sensitive information: client plans, building security layouts, budgets, and personal information about our colleagues. Protecting that information is part of everyone's job.
+
+## Client and project information
+
+- Treat all project drawings, models, and documents as confidential unless they have been publicly released by the client.
+- Some clients require a signed non-disclosure agreement (NDA). Your PM will tell you if a project has one. Do not discuss those projects outside the project team.
+- Security-sensitive drawings (for example, fire station and school security plans) may only be shared through the project's secure SharePoint folder, never by personal email.
+- Do not discuss project details in public places such as restaurants, trains, or on social media.
+
+## Posting project images
+
+Do not post project images, renderings, or photos of the studio's work on social media or in a personal portfolio without written approval from the Design Principal. Some clients do not allow any public images until their project is officially announced.
+
+## Devices and data
+
+- Lock your computer (Windows key + L) whenever you leave your desk.
+- Do not use personal USB drives on studio computers. Use SharePoint to share files.
+- Do not install software on your studio computer yourself. Submit a request to IT.
+- If a laptop, phone, or key card is lost or stolen, or you think project data may have been exposed, report it to the IT Manager within 24 hours.
+
+## Employee information
+
+Personnel files, pay, medical information, and other personal employee information are handled only by HR and the Payroll & Accounting Manager. If you come across another employee's personal information by mistake, do not share it; let the HR Manager know.
+
+PAGEBREAK
+
+# 10. HARASSMENT PREVENTION
+
+Studio Meridian is committed to a workplace free of harassment, discrimination, and retaliation. This policy applies to everyone who works with us: employees, interns, principals, consultants, clients, and contractors, in the studio, on job sites, at client meetings, at studio events, and online.
+
+## What harassment is
+
+Harassment is unwelcome conduct based on a protected characteristic such as race, color, religion, sex, sexual orientation, gender identity, national origin, age, disability, or veteran status. It includes:
+
+- Offensive jokes, slurs, name-calling, or comments about someone's appearance
+- Unwanted touching or physical contact
+- Sexual advances, requests for dates after someone has said no, or sexual comments
+- Displaying offensive images or messages, including in Teams or email
+- Threats, intimidation, or treating someone worse because of who they are
+
+## Reporting
+
+If you experience or witness harassment, report it. You can report to:
+
+- The HR Manager (Elena Kowalski), or
+- Any principal (Dana Whitfield or Marcus Oyelaran), or
+- The anonymous reporting hotline: https://studiomeridian.ethicsline.example/report (LINK TBD)
+
+You do not have to report to your supervisor first, and you do not have to report to the person involved. Reports are handled as confidentially as possible and investigated promptly.
+
+## No retaliation
+
+Retaliation against anyone who reports harassment in good faith, or who takes part in an investigation, is strictly prohibited and is itself a violation of this policy.
+
+## Training
+
+All employees must complete harassment prevention training within 30 days of their start date and every two years after that. New employees should watch the 2017 harassment training video on the DVD in the studio library and sign the acknowledgment form.
+
+Harassment prevention training is required annually for all staff.
+
+The Studio Coordinator schedules trainings and tracks completion.
+
+PAGEBREAK
+
+# 11. MISC / FAQ
+
+Q: Who do I ask if I don't know who to ask?
+A: The Office Manager.
+
+Q: Where do I save my files?
+A: Project files go in the project folder on \\SM-FS02\Projects\. Never save project files only on your desktop.
+
+Q: Can I work from home?
+A: Talk to your PM. Remote days need to be agreed with your team and cannot fall on client meeting days.
+
+Q: How do I get a Revit license?
+A: Revit is installed on all studio workstations. Ask IT if yours is not working.
+
+Q: Where is the BIM Standards manual?
+A: See Section 4. If the link doesn't work, ask the BIM Manager for the current version.
+
+Q: Is there a mentorship program?
+A: Coming soon!
+
+Q: What if I get hurt at work or on a site?
+A: Tell your PM and the Office Manager right away, and fill out an incident report the same day.
+
+PAGEBREAK
+
+# 12. YOUR FIRST WEEKS
+
+Your first two weeks are about getting set up, meeting people, and learning how we work. You are not expected to be fully productive yet. The Studio Coordinator (Fatima Noor) will send you an onboarding schedule before your first day.
+
+## Your first day
+
+- Pick up your key card from the Office Manager (Priya Raman) at reception.
+- Meet the IT Support Specialist (Jordan Pike) to set up your computer, email, and Microsoft Teams accounts.
+- Meet your Project Manager, who will introduce you to your project team and show you the project page on SharePoint.
+- Fill out the Direct Deposit Authorization form and return it to the Payroll & Accounting Manager.
+
+## Your first week
+
+- Meet with the Studio Coordinator to go over your onboarding schedule and required trainings.
+- Complete the Revit orientation with the BIM Manager (Samir Haddad) before working in any project model.
+- Complete the model shop safety training if you will be building physical models.
+- Submit your first timesheet.
+
+## Your first 30 days
+
+- Complete harassment prevention training.
+- Enroll in benefits (see Section 20).
+- Attend at least one Thursday design review.
+
+If you are not sure what to do next, ask the Studio Coordinator.
+
+# 13. DESIGN VALUES
+
+These are the values we use to judge our own work in design reviews and on every project.
+
+- Design for the community. Our buildings are public places. We design for the people who will use them every day, not only for the client who pays for them.
+- Make it last. We choose durable materials and simple, flexible plans so our buildings can serve for decades and adapt as needs change.
+- Build it right. A good idea is only as good as its drawings. Clear, coordinated documents are part of good design.
+- Sustainability is the baseline. Every project starts with daylight, energy use, and embodied carbon, not as an add-on at the end.
+- Work in the open. Pin up early, share unfinished work, and invite critique. The best ideas in this studio have come from people who were not on the project.
+
+PAGEBREAK
+
+# 14. COMMUNICATION
+
+We use a few tools, each for a different job. Using the right one keeps important messages from getting lost.
+
+| Tool | Use it for |
+| Microsoft Teams chat | Quick questions and day-to-day conversation with your team |
+| Teams project channels | Project discussion, decisions, and file links for one project |
+| Teams #studio-general | Studio-wide announcements, events, and office notices |
+| Teams #bim-help | Revit and BIM questions; the BIM team monitors it |
+| Email | Anything that goes to clients, consultants, or contractors |
+| Desk phone | Calling someone in the office by their 3-digit extension |
+
+Each project has its own Teams channel, named with the project number and name (for example, RL-2301 Riverside Library). Your PM will add you to the channels for your projects.
+
+All client and consultant communication goes by email, and your PM or Project Architect should be copied on every message. Do not send project decisions to clients through Teams.
+
+The whole studio meets every Monday at 10:30 AM in the main conference room for a 30-minute studio update. Remote staff join on Teams.
+
+# 15. ORGANIZATION CHART
+
+Studio Meridian is led by two principals. Every team reports up to one of them.
+
+| Name | Title | Reports to |
+| Dana Whitfield | Managing Principal | - |
+| Marcus Oyelaran | Design Principal | Dana Whitfield |
+| Priya Raman | Office Manager | Dana Whitfield |
+| Elena Kowalski | HR Manager | Dana Whitfield |
+| Fatima Noor | Studio Coordinator | Priya Raman |
+| Tom Brennan | Payroll & Accounting Manager | Dana Whitfield |
+| Grace Liu | Accounting Specialist | Tom Brennan |
+| Samir Haddad | BIM Manager | Marcus Oyelaran |
+| Keiko Tanaka | BIM Coordinator | Samir Haddad |
+| Luis Ortega | IT Manager | Dana Whitfield |
+| Jordan Pike | IT Support Specialist | Luis Ortega |
+| Hannah Morrow | Senior Project Manager | Dana Whitfield |
+| Victor Hale | Project Manager | Hannah Morrow |
+| Rachel Adeyemi | Design Manager | Marcus Oyelaran |
+| Omar Siddiqui | Design Manager | Marcus Oyelaran |
+| Ben Castillo | Project Architect | Hannah Morrow |
+| Chloe Bennett | Senior Designer | Rachel Adeyemi |
+| Nate Olsen | Architectural Designer | Rachel Adeyemi |
+| Alex Rivera | Architectural Intern | Rachel Adeyemi |
+| Jamie Cho | Architectural Intern | Omar Siddiqui |
+
+On a project, you work for that project's Project Manager, whoever you report to on this chart. The project page on SharePoint lists each project's team.
+
+PAGEBREAK
+
+# 16. FILE NAMING & FOLDER STRUCTURE
+
+## Project folders
+
+Every project has one folder on the project server: \\SM-FS02\Projects\<project number>\. Each project folder has the same subfolders:
+
+| Folder | What goes in it |
+| Admin | Proposals, fee, schedule, and meeting minutes |
+| Contracts | Signed agreements and amendments (PM and principals only) |
+| Correspondence | Saved emails, letters, and transmittals |
+| Design | Sketches, diagrams, renderings, and presentation files |
+| BIM | Revit models: Central, Sandbox, and Links subfolders |
+| CAD | CAD backgrounds and files received from consultants |
+| Issued | Every drawing set that leaves the studio, one subfolder per issue |
+| Photos | Site and existing-conditions photos |
+
+Do not create new top-level folders in a project folder. If you are not sure where a file belongs, ask the Project Architect.
+
+## File names
+
+Name working files: <project number>_<description>_<your initials>. Use hyphens inside the description and underscores only between the three parts. Do not use spaces. For example: RL-2301_Lobby-Study_AR.skp or RL-2301_Option-B_AR.rvt.
+
+Name issued sets: <project number>_<set name>_<date>, with the date written YYYY-MM-DD. For example: RL-2301_CD-Set_2024-03-15.pdf.
+
+- Never add "final" or "new" to a file name. Use the date or ask the Project Architect.
+- Do not rename a file after it has been issued.
+- Central models are named by the project BIM Lead. Do not rename them.
+
+# 17. BILLING YOUR HOURS
+
+Studio Meridian bills most clients by the hour, so the hours on your timesheet become the client's invoice. Charge your time to the project and phase you actually worked on.
+
+## Phase codes
+
+| Code | Phase |
+| SD | Schematic Design |
+| DD | Design Development |
+| CD | Construction Documents |
+| CA | Construction Administration |
+| AS | Additional Services |
+
+Charge time to AS only when your PM tells you the client has approved the additional service in writing. Work on a change the client has not approved still goes to the project's current phase, and you should tell your PM.
+
+## Billable and non-billable time
+
+- Billable time is work on a project for a client: design, drawings, models, meetings, and site visits for that project.
+- Non-billable time goes to an overhead code (see Section 6), for example studio meetings, trainings, and proposals.
+- Travel to a site for a project is billable to that project. Your regular commute is not.
+- If you worked on two projects in one day, split your hours between them. Do not put the whole day on one project.
+
+Your PM reviews every project's hours against its budget each month. If you think a task will take much longer than planned, tell your PM early.
+
+PAGEBREAK
+
+# 18. EXPENSE REPORTS
+
+You can be reimbursed for business expenses you pay for yourself, such as mileage to a job site, parking at a client meeting, or printing at an outside shop. Expenses for a project are charged to that project so they can be billed to the client.
+
+How to submit an expense report:
+
+1. Keep the receipt. Take a photo of paper receipts right away.
+2. In Deltek Vantagepoint, open Expenses and create a new expense report.
+3. Add a line for each expense with the date, amount, project number, and a short description.
+4. Attach a receipt for every expense over $25.
+5. For mileage, enter the miles driven and the start and end addresses. Vantagepoint calculates the amount.
+6. Submit the report. Your PM approves it.
+
+Submit expenses within 30 days of the purchase. Approved expenses are reimbursed in your next paycheck.
+
+Anything over $250, and any software, equipment, or travel, needs your PM's approval before you buy it. Questions go to Grace Liu (Accounting Specialist).
+
+# 19. OFFICE LAYOUT
+
+The studio takes up the whole third floor. Your key card opens the front door and the studio floor.
+
+| Area | Where | What it's for |
+| Reception | By the elevators | Visitors, mail, and deliveries. The Office Manager sits here. |
+| Main conference room | Next to reception | Client meetings, Monday studio updates, and Thursday design reviews |
+| Studio floor | Center of the floor | Desks, grouped by project team |
+| Library and quiet area | North side | Material samples, reference books, and focused work |
+| Phone rooms | Along the east wall | Calls and small Teams meetings; no booking needed |
+| Plot room | Behind the studio floor | Plotters, printers, and paper |
+| Model shop | South corner | Laser cutter and power tools; shop training required |
+| Kitchen | West side | Coffee, lunch, and the refrigerator |
+| Supply room | Next to the kitchen | Office supplies, and hard hats and safety vests for site visits |
+
+Your desk is assigned by the Office Manager and may move when project teams change. Ask the Office Manager for supplies or if something in the office needs fixing.
+
+# 20. BENEFITS
+
+Full-time employees are eligible for benefits starting the first day of the month after their start date. You must enroll within 30 days of your start date. If you miss the enrollment window, you have to wait for open enrollment in November unless you have a qualifying life event.
+
+- Health insurance: two medical plans to choose from. The studio pays 90% of the premium for employees and 50% for dependents.
+- Dental and vision insurance.
+- 401(k) retirement plan. The studio matches 100% of what you contribute, up to 4% of your salary.
+- Flexible spending account (FSA) for health care costs.
+- Licensure support: the studio pays for each ARE exam division you pass and your AIA membership dues.
+- Continuing education: up to 16 hours a year of paid time for approved courses. Record them with the OH-TRAIN code.
+
+Enroll in the HR portal: https://hr.studiomeridian.example/portal. Part-time employees and interns should ask the HR Manager which benefits they are eligible for.
+
+Questions about benefits go to the HR Manager (Elena Kowalski).

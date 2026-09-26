@@ -1,0 +1,19 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Local tooling
+.DS_Store
+.idea/
+.mcp.json
+.claude/settings.local.json
+
+# Output of backend/scripts/enhance_sample.py
+enhancement_sample.json
