@@ -134,6 +134,7 @@ SUPABASE_SERVICE_ROLE_KEY=
 ANTHROPIC_API_KEY=
 ANTHROPIC_MODEL=
 FRONTEND_ORIGIN=http://localhost:5173
+DEMO_DATE=            # optional, YYYY-MM-DD: pins "today" for who's-in-today on contact cards
 ```
 
 ### 3. Frontend
@@ -188,6 +189,13 @@ Never commit `.env` files. The service role key must stay on the backend.
 4. Intern asks, "I had a problem with my payroll, who can help?" The payroll manager is out, so the card shows the backup.
 5. Intern takes the final check, misses the Revit scenario, and gets a link back to the BIM module.
 6. Admin sees progress and the most-failed question.
+
+Before the demo, set `DEMO_DATE=2026-09-28` in `backend/.env` (a Monday: the payroll manager is out, his backup is in) and restart the backend. To run the intern's part again, reset their progress, final check, and assistant history:
+
+```bash
+cd backend
+.venv/bin/python -m scripts.reset_demo   # Alex Rivera by default
+```
 
 ## Roadmap
 
