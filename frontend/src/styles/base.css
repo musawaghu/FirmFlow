@@ -1,0 +1,103 @@
+/* Element defaults. Every value comes from tokens.css (Design.md section 4). */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  margin: 0;
+}
+
+/* Russo One: page titles only, never below 1.5rem. */
+h1 {
+  font-family: var(--font-title);
+  font-size: var(--fs-h1);
+  line-height: 1.15;
+  font-weight: 400;
+}
+
+h2 {
+  font-family: var(--font-subtitle);
+  font-size: var(--fs-h2);
+  line-height: 1.25;
+  font-weight: 600;
+}
+
+h3,
+h4 {
+  font-family: var(--font-subtitle);
+  font-size: var(--fs-h3);
+  line-height: 1.3;
+  font-weight: 600;
+}
+
+a {
+  color: var(--color-action);
+  font-weight: 600;
+}
+
+a:hover {
+  color: var(--color-action-hover);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+/* Design.md section 10: a visible focus state on everything interactive. */
+:focus-visible {
+  outline: var(--border-width) solid var(--color-action);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+  }
+}
+
+.small {
+  font-size: var(--fs-small);
+  line-height: 1.4;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
