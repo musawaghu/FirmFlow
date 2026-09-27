@@ -235,12 +235,9 @@ Never commit `.env` files. The service role key must stay on the backend.
 
 ### Deploy the frontend (Vercel)
 
-Live at https://firmflow-iota.vercel.app (Vercel project `firmflow`). `frontend/vercel.json` sends every path to `index.html`, so links like `/app/final-check` work on refresh. The project's production environment variables are `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` (added as `--type config`: it's public by design), and `VITE_API_URL` (the Cloud Run URL). Vite bakes them in at build time, so redeploy after changing one:
+Live at https://firmflow-iota.vercel.app (Vercel project `firmflow`). `frontend/vercel.json` sends every path to `index.html`, so links like `/app/final-check` work on refresh. The project's production environment variables are `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` (added as `--type config`: it's public by design), and `VITE_API_URL` (the Cloud Run URL). Vite bakes them in at build time, so redeploy after changing one.
 
-```bash
-cd frontend
-vercel deploy --prod
-```
+The project is connected to this GitHub repo with root directory `frontend`: a push to `master` deploys to production, and every pull request gets a preview build. To deploy by hand instead, run `vercel deploy --prod` from the repo root (the root directory setting points it at `frontend/`).
 
 The backend only answers browsers from origins in `FRONTEND_ORIGIN`. If the frontend's URL changes, add it there and redeploy the backend.
 
