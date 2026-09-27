@@ -5,7 +5,7 @@ import pytest
 from app.routers import quiz as quiz_router
 from app.services import quiz as quiz_service
 from tests.claude_mock import error_client, mock_client, sse
-from tests.conftest import FIRM_A, auth
+from tests.conftest import FIRM_A, TOKENS, auth
 
 DETACH_TEXT = (
     'Do NOT copy the central file in File Explorer. Check "Detach from Central", choose '
@@ -314,6 +314,78 @@ def test_attempts_are_private(api, repo, ready):
     q = attempt["questions"][0]
     assert answer(api, attempt["id"], q["id"], token="admin-a", selected_choice=0).status_code == 404
     assert api.get("/api/quiz/attempts/current", headers=auth("admin-b")).status_code == 404
+
+
+# ---------------------------------------------------------------------------
+# Two employees in the same firm: records never cross over
+# ---------------------------------------------------------------------------
+
+@pytest.fixture
+def jamie(repo, monkeypatch):
+    """A second employee at the same firm as Alex."""
+    repo.insert("profiles", [{"id": "user-employee-a2", "firm_id": FIRM_A, "role": "employee",
+                              "full_name": "Jamie Cho", "email": "jamie@a.example"}])
+    monkeypatch.setitem(TOKENS, "employee-a2", "user-employee-a2")
+    return "employee-a2"
+
+
+def answer_all_correctly(api, repo, attempt, token="employee-a"):
+    for q in attempt["questions"]:
+        body = {"selected_choice": key(repo, q["id"])["correct_choice"]} if q["type"] == "multiple_choice" \
+            else {"answer_text": "Open it with Detach from Central and save to the Sandbox folder."}
+        assert answer(api, attempt["id"], q["id"], token=token, **body).status_code == 200
+
+
+def test_module_progress_is_per_employee(api, repo, ready, jamie):
+    """Alex finished the required module (in `ready`); Jamie hasn't started."""
+    alex = api.get("/api/modules", headers=auth("employee-a")).json()
+    mine = api.get("/api/modules", headers=auth(jamie)).json()
+    assert (alex["completed_required"], alex["final_check_unlocked"]) == (1, True)
+    assert (mine["full_name"], mine["completed_required"], mine["final_check_unlocked"]) == ("Jamie Cho", 0, False)
+    assert [m["progress"] for m in mine["modules"]] == ["not_started"]
+    assert start(api, token=jamie).status_code == 403
+    assert [(r["profile_id"], r["status"]) for r in repo.select("module_progress")] == [("user-employee-a", "completed")]
+
+
+def test_another_employees_attempt_cannot_be_answered_or_read(api, repo, ready, jamie):
+    complete_modules(api, ready, token=jamie)
+    alex_attempt = start(api).json()
+    q = alex_attempt["questions"][0]
+    correct = key(repo, q["id"])["correct_choice"]
+
+    res = answer(api, alex_attempt["id"], q["id"], token=jamie, selected_choice=correct)
+    assert res.status_code == 404
+    assert res.json()["detail"] == "Attempt not found"
+    assert repo.select("quiz_answers") == []  # nothing recorded against Alex's attempt
+    assert api.get("/api/quiz/attempts/current", headers=auth(jamie)).json()["detail"] == "No attempts yet"
+    alex_view = api.get("/api/quiz/attempts/current", headers=auth("employee-a")).json()
+    assert [(x["state"], x["tries"]) for x in alex_view["questions"]] == [("unanswered", 0)] * len(alex_view["questions"])
+
+
+def test_each_employee_gets_their_own_attempt_and_score(api, repo, ready, jamie):
+    complete_modules(api, ready, token=jamie)
+    alex_attempt = start(api).json()
+    answer_all_correctly(api, repo, alex_attempt)
+
+    jamie_attempt = start(api, token=jamie).json()
+    assert jamie_attempt["id"] != alex_attempt["id"]
+    assert jamie_attempt["status"] == "in_progress"
+    assert {x["state"] for x in jamie_attempt["questions"]} == {"unanswered"}
+
+    # Jamie misses a question; Alex's finished attempt and score don't move.
+    mc_q = next(x for x in jamie_attempt["questions"] if x["type"] == "multiple_choice")
+    wrong = (key(repo, mc_q["id"])["correct_choice"] + 1) % 4
+    assert answer(api, jamie_attempt["id"], mc_q["id"], token=jamie, selected_choice=wrong).json()["is_correct"] is False
+
+    alex_now = api.get("/api/quiz/attempts/current", headers=auth("employee-a")).json()
+    assert (alex_now["id"], alex_now["status"], alex_now["score"]) == (alex_attempt["id"], "completed", 100.0)
+    jamie_now = api.get("/api/quiz/attempts/current", headers=auth(jamie)).json()
+    assert (jamie_now["status"], jamie_now["score"]) == ("in_progress", None)
+    assert {a["attempt_id"] for a in repo.select("quiz_answers") if a["is_correct"] is False} == {jamie_attempt["id"]}
+
+    progress = {e["full_name"]: e for e in api.get("/api/admin/progress", headers=auth()).json()["employees"]}
+    assert (progress["Alex Rivera"]["stage"], progress["Alex Rivera"]["final_check"]["score"]) == ("complete", 100.0)
+    assert (progress["Jamie Cho"]["stage"], progress["Jamie Cho"]["final_check"]["status"]) == ("modules_done", "in_progress")
 
 
 # ---------------------------------------------------------------------------
