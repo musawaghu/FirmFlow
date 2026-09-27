@@ -82,8 +82,5 @@ class FakeStorage:
     def upload(self, path, data, content_type):
         self.files[path] = (data, content_type)
 
-    def download(self, path):
-        return self.files[path][0]
-
     def remove(self, path):
         self.files.pop(path, None)

@@ -77,9 +77,6 @@ class Storage:
     def upload(self, path: str, data: bytes, content_type: str) -> None:
         self.bucket.upload(path, data, {"content-type": content_type})
 
-    def download(self, path: str) -> bytes:
-        return self.bucket.download(path)
-
     def remove(self, path: str) -> None:
         self.bucket.remove([path])
 

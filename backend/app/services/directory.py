@@ -29,10 +29,6 @@ DAY_NAMES = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 STOPWORDS = {"the", "project", "for", "of", "and", "a", "an", "on"}
 
 
-def _role_label(role: str) -> str:
-    return role.replace("_", " ").capitalize()
-
-
 def _tokens(text: str) -> set[str]:
     return {t for t in re.findall(r"[a-z0-9]+", text.lower()) if t not in STOPWORDS}
 
