@@ -159,7 +159,47 @@ DEMO_DATE=            # optional, YYYY-MM-DD: pins "today" for who's-in-today on
 ENVIRONMENT=development   # "production" turns off /docs and turns on HSTS
 ```
 
-In production, run uvicorn behind HTTPS with `--proxy-headers` so rate limits see the real client address.
+In production, run uvicorn behind HTTPS with `--proxy-headers` so rate limits see the real client address. The Docker image does this.
+
+### Deploy the backend (Cloud Run)
+
+`backend/Dockerfile` builds the production image. Cloud Build builds it from source, so you don't need Docker locally. One-time setup:
+
+```bash
+gcloud auth login
+gcloud config set project <PROJECT_ID>
+gcloud services enable run.googleapis.com cloudbuild.googleapis.com artifactregistry.googleapis.com secretmanager.googleapis.com
+
+# The two secrets go in Secret Manager, never in env vars or the image.
+printf %s "$SUPABASE_SERVICE_ROLE_KEY" | gcloud secrets create SUPABASE_SERVICE_ROLE_KEY --data-file=-
+printf %s "$ANTHROPIC_API_KEY" | gcloud secrets create ANTHROPIC_API_KEY --data-file=-
+# Let the Cloud Run runtime service account read them:
+gcloud projects add-iam-policy-binding <PROJECT_ID> \
+  --member="serviceAccount:<PROJECT_NUMBER>-compute@developer.gserviceaccount.com" \
+  --role=roles/secretmanager.secretAccessor
+```
+
+Deploy (run it again to redeploy):
+
+```bash
+gcloud run deploy firmflow-api --source backend --region us-central1 \
+  --allow-unauthenticated \
+  --no-cpu-throttling --min-instances=1 --max-instances=1 \
+  --timeout=900 --memory=1Gi --cpu=1 \
+  --set-env-vars="^|^ENVIRONMENT=production|SUPABASE_URL=<url>|ANTHROPIC_MODEL=claude-opus-5|FRONTEND_ORIGIN=http://localhost:5173|DEMO_DATE=2026-09-28" \
+  --set-secrets=SUPABASE_SERVICE_ROLE_KEY=SUPABASE_SERVICE_ROLE_KEY:latest,ANTHROPIC_API_KEY=ANTHROPIC_API_KEY:latest
+```
+
+Why these flags:
+
+| Flag | Why |
+| --- | --- |
+| `--no-cpu-throttling`, `--min-instances=1` | Manual processing runs as a background task after the response returns (up to about 15 minutes). CPU must stay on and the instance must stay up. |
+| `--max-instances=1` | Rate limits are kept in memory, so they're only correct with one instance. |
+| `--timeout=900` | Quiz generation holds its request open for up to 5 minutes. |
+| `--allow-unauthenticated` | The API checks Supabase logins itself. Cloud Run's own gate would block browsers. |
+
+`FRONTEND_ORIGIN` takes a comma list. Once the frontend is deployed, add its URL. That's why the command uses `^|^` as the separator. After the demo, `--min-instances=0` lets the service scale to zero.
 
 ### 3. Frontend
 

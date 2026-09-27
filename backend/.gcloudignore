@@ -1,0 +1,13 @@
+# Files gcloud never uploads to Cloud Build. Secrets live in Secret Manager.
+.gcloudignore
+.git
+.env
+.env.*
+!.env.example
+.venv
+__pycache__
+*.pyc
+.pytest_cache
+.ruff_cache
+tests
+scripts
