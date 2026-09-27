@@ -15,6 +15,8 @@ export interface AdminContext {
   baselineModules: BaselineModule[];
   replaceFirmModule: (m: AdminModule) => void;
   replaceBaselineModule: (m: BaselineModule) => void;
+  /** Refetch everything, e.g. after a manual is processed or a new module is approved. */
+  reload: () => Promise<void>;
 }
 
 export function useAdmin(): AdminContext {
@@ -56,6 +58,7 @@ export function AdminLayout() {
         baselineModules,
         replaceFirmModule: (m) => setFirmModules((list) => sortModules((list ?? []).map((x) => (x.id === m.id ? m : x)))),
         replaceBaselineModule: (m) => setBaselineModules((list) => sortModules((list ?? []).map((x) => (x.id === m.id ? m : x)))),
+        reload: load,
       }
     : null;
 
@@ -69,6 +72,12 @@ export function AdminLayout() {
               <span className="status-row">
                 <Icon name="chart" />
                 Dashboard
+              </span>
+            </NavLink>
+            <NavLink to="/admin/manuals" className="sidebar-link">
+              <span className="status-row">
+                <Icon name="book" />
+                Manuals and review
               </span>
             </NavLink>
           </div>

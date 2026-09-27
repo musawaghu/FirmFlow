@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { Icon } from "../../components/Icon";
@@ -7,8 +7,9 @@ import { ErrorPanel, PriorityBadge } from "../../components/Status";
 import { api } from "../../lib/api";
 import { useMe } from "../../lib/auth";
 import { PRIORITIES, PRIORITY_LABEL } from "../../lib/format";
-import type { AdminModule as FirmModule, AdminPassage, BaselineModule, Priority } from "../../lib/types";
+import type { AdminModule as FirmModule, BaselineModule, Priority } from "../../lib/types";
 import { useAdmin } from "./AdminLayout";
+import { CriticalToggle, FirmModuleBody, Toast, useToast } from "./FirmModuleBody";
 
 export function AdminModule() {
   const { layer, moduleId } = useParams();
@@ -24,16 +25,6 @@ export function AdminModule() {
 // ---------------------------------------------------------------------------
 // Shared pieces
 // ---------------------------------------------------------------------------
-
-function useToast(): [string | null, (message: string) => void] {
-  const [toast, setToast] = useState<string | null>(null);
-  useEffect(() => {
-    if (!toast) return;
-    const t = setTimeout(() => setToast(null), 2500);
-    return () => clearTimeout(t);
-  }, [toast]);
-  return [toast, setToast];
-}
 
 interface Settings {
   priority: Priority;
@@ -111,28 +102,6 @@ function SettingsCard({
         )}
       </div>
     </section>
-  );
-}
-
-function CriticalToggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => Promise<void> }) {
-  const [busy, setBusy] = useState(false);
-  return (
-    <label className="toggle-row">
-      <input
-        type="checkbox"
-        checked={checked}
-        disabled={busy}
-        onChange={async (e) => {
-          setBusy(true);
-          try {
-            await onChange(e.target.checked);
-          } finally {
-            setBusy(false);
-          }
-        }}
-      />
-      Critical: include in the final check
-    </label>
   );
 }
 
@@ -220,11 +189,7 @@ function BaselineEditor({ module }: { module: BaselineModule }) {
         </section>
       ))}
 
-      {toast && (
-        <div className="toast" role="status">
-          {toast}
-        </div>
-      )}
+      <Toast message={toast} />
     </article>
   );
 }
@@ -236,42 +201,11 @@ function BaselineEditor({ module }: { module: BaselineModule }) {
 function FirmEditor({ module }: { module: FirmModule }) {
   const { replaceFirmModule } = useAdmin();
   const [toast, showToast] = useToast();
-  const [error, setError] = useState<string | null>(null);
-  const [confirmFlagged, setConfirmFlagged] = useState(false);
-  const [approving, setApproving] = useState(false);
   const approved = module.status === "approved";
-  const flagged = module.passages.filter((p) => p.grounding_ok !== true);
 
   const saveSettings = async (s: Settings) => {
-    const updated = await api.updateModule(module.id, { priority: s.priority, is_required: s.is_required });
-    replaceFirmModule(updated);
+    replaceFirmModule(await api.updateModule(module.id, { priority: s.priority, is_required: s.is_required }));
     showToast("Settings saved");
-  };
-
-  const replacePassage = (p: AdminPassage) => replaceFirmModule({ ...module, passages: module.passages.map((x) => (x.id === p.id ? p : x)) });
-
-  const setCritical = async (passage: AdminPassage, value: boolean) => {
-    setError(null);
-    try {
-      replacePassage(await api.updatePassage(passage.id, { is_critical: value }));
-      showToast(value ? "Added to the final check" : "Removed from the final check");
-    } catch (e) {
-      setError((e as Error).message);
-    }
-  };
-
-  const approve = async () => {
-    setApproving(true);
-    setError(null);
-    try {
-      replaceFirmModule(await api.updateModule(module.id, { status: "approved", confirm_flagged: confirmFlagged }));
-      setConfirmFlagged(false);
-      showToast("Approved: new hires can see it");
-    } catch (e) {
-      setError((e as Error).message);
-    } finally {
-      setApproving(false);
-    }
   };
 
   return (
@@ -287,164 +221,8 @@ function FirmEditor({ module }: { module: FirmModule }) {
       </div>
 
       <SettingsCard initial={{ priority: module.priority, is_required: module.is_required }} showVisibility={false} onSave={saveSettings} />
-
-      {!approved && (
-        <section className="card card-alt" aria-labelledby="approve-title">
-          <h2 id="approve-title">Publish to new hires</h2>
-          <p>This module is a draft, so new hires can&rsquo;t see it. Approve it when the text is right.</p>
-          {flagged.length > 0 && (
-            <label className="toggle-row">
-              <input type="checkbox" checked={confirmFlagged} onChange={(e) => setConfirmFlagged(e.target.checked)} />
-              {flagged.length} section{flagged.length === 1 ? " has" : "s have"} text the manual doesn&rsquo;t support, or wasn&rsquo;t checked. I&rsquo;ve
-              reviewed {flagged.length === 1 ? "it" : "them"} and want to approve anyway.
-            </label>
-          )}
-          <div>
-            <button type="button" className="btn btn-primary" onClick={approve} disabled={approving || (flagged.length > 0 && !confirmFlagged)}>
-              <Icon name="check" />
-              {approving ? "Approving…" : "Approve module"}
-            </button>
-          </div>
-        </section>
-      )}
-
-      {error && (
-        <p className="form-error" role="alert">
-          {error}
-        </p>
-      )}
-
-      {module.passages.map((p) => (
-        <FirmPassage
-          key={p.id}
-          passage={p}
-          moduleApproved={approved}
-          onCritical={(v) => setCritical(p, v)}
-          onSaved={(updated, moved) => {
-            if (moved) replaceFirmModule({ ...module, status: "draft", passages: module.passages.map((x) => (x.id === updated.id ? updated : x)) });
-            else replacePassage(updated);
-            showToast(updated.grounding_ok ? "Saved. The text matches the manual." : "Saved, but some text isn't supported by the manual");
-          }}
-        />
-      ))}
-
-      {toast && (
-        <div className="toast" role="status">
-          {toast}
-        </div>
-      )}
+      <FirmModuleBody module={module} onChange={replaceFirmModule} />
+      <Toast message={toast} />
     </article>
-  );
-}
-
-function FirmPassage({
-  passage,
-  moduleApproved,
-  onCritical,
-  onSaved,
-}: {
-  passage: AdminPassage;
-  moduleApproved: boolean;
-  onCritical: (v: boolean) => Promise<void>;
-  onSaved: (p: AdminPassage, movedToDraft: boolean) => void;
-}) {
-  const { firmModules } = useAdmin();
-  const [editing, setEditing] = useState(false);
-  const [text, setText] = useState(passage.content);
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const save = async () => {
-    if (
-      moduleApproved &&
-      !window.confirm("Editing moves this module back to draft. New hires won't see it until you approve it again. Continue?")
-    ) {
-      return;
-    }
-    setSaving(true);
-    setError(null);
-    try {
-      const module = firmModules.find((m) => m.passages.some((p) => p.id === passage.id));
-      // The backend only accepts text edits on drafts.
-      if (moduleApproved && module) await api.updateModule(module.id, { status: "draft" });
-      const updated = await api.updatePassage(passage.id, { content: text });
-      setEditing(false);
-      if (updated.grounding_error) setError(`Saved, but the check against the manual couldn't run: ${updated.grounding_error}`);
-      onSaved(updated, moduleApproved);
-    } catch (e) {
-      setError((e as Error).message);
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const spans = passage.unsupported_spans;
-
-  return (
-    <section className="passage">
-      <div className="card-header">
-        <h2>{passage.heading ?? "Untitled section"}</h2>
-        <div className="status-row">
-          {passage.grounding_ok === false && (
-            <span className="badge badge-pending">
-              <Icon name="alert" size={12} />
-              Not supported by the manual
-            </span>
-          )}
-          {passage.grounding_ok === null && <span className="badge badge-neutral">Not checked</span>}
-          {!editing && (
-            <button type="button" className="btn btn-secondary btn-small" onClick={() => setEditing(true)}>
-              <Icon name="edit" size={14} />
-              Edit text
-            </button>
-          )}
-        </div>
-      </div>
-
-      {editing ? (
-        <div className="stack">
-          <label className="sr-only" htmlFor={`edit-${passage.id}`}>
-            Section text
-          </label>
-          <textarea id={`edit-${passage.id}`} className="input textarea" value={text} onChange={(e) => setText(e.target.value)} rows={10} />
-          <p className="small">Saving checks the new text against the section of the manual it came from. Edit for clarity; don&rsquo;t add new facts.</p>
-          <div className="status-row">
-            <button type="button" className="btn btn-primary" onClick={save} disabled={saving || !text.trim() || text === passage.content}>
-              {saving ? "Saving and checking…" : "Save"}
-            </button>
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={() => {
-                setEditing(false);
-                setText(passage.content);
-              }}
-              disabled={saving}
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      ) : (
-        <PassageText text={passage.content} />
-      )}
-
-      {spans.length > 0 && passage.grounding_ok === false && (
-        <div className="form-error">
-          Not found in the manual:
-          <ul>
-            {spans.map((s, i) => (
-              <li key={i}>&ldquo;{s.text}&rdquo;</li>
-            ))}
-          </ul>
-        </div>
-      )}
-      {error && (
-        <p className="form-error" role="alert">
-          {error}
-        </p>
-      )}
-      <CriticalToggle checked={passage.is_critical} onChange={onCritical} />
-    </section>
   );
 }

@@ -62,6 +62,12 @@ export function EmployeeLayout() {
                 Onboarding home
               </span>
             </NavLink>
+            <NavLink to="/app/ask" className="sidebar-link">
+              <span className="status-row">
+                <Icon name="question" />
+                Who do I ask?
+              </span>
+            </NavLink>
           </div>
           {data &&
             byPriority(data.modules).map(
@@ -78,6 +84,18 @@ export function EmployeeLayout() {
                   </div>
                 ),
             )}
+          {data && (
+            <div className="sidebar-group">
+              <span className="sidebar-heading">Finish</span>
+              <NavLink to="/app/final-check" className="sidebar-link">
+                <span className="status-row">
+                  <Icon name={data.final_check_unlocked ? "star" : "lock"} />
+                  Final check
+                </span>
+                <span className="small">{data.final_check_unlocked ? "Unlocked" : "Locked"}</span>
+              </NavLink>
+            </div>
+          )}
         </nav>
         <main className="main">
           {error ? (

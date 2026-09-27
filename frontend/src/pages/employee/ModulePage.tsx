@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 
 import { Icon } from "../../components/Icon";
 import { PassageText } from "../../components/PassageText";
@@ -10,6 +10,7 @@ import { useEmployee } from "./EmployeeLayout";
 
 export function ModulePage() {
   const { moduleId } = useParams();
+  const { hash } = useLocation();
   const me = useMe();
   const { list, markProgress } = useEmployee();
   const [saving, setSaving] = useState(false);
@@ -28,9 +29,12 @@ export function ModulePage() {
       );
     }
     setError(null);
-    window.scrollTo(0, 0);
-    // Only when the module changes, not on every progress update.
-  }, [module?.id]);
+    // A review link from the final check points at one passage (#passage-<id>).
+    const target = hash ? document.getElementById(hash.slice(1)) : null;
+    if (target) target.scrollIntoView();
+    else window.scrollTo(0, 0);
+    // Only when the module or target changes, not on every progress update.
+  }, [module?.id, hash]);
 
   if (!module) return <ErrorPanel message="This module isn't available." />;
 
@@ -61,7 +65,12 @@ export function ModulePage() {
       </div>
 
       {module.passages.map((p) => (
-        <section key={p.id} className="passage" aria-label={p.heading ?? undefined}>
+        <section
+          key={p.id}
+          id={`passage-${p.id}`}
+          className={`passage${hash === `#passage-${p.id}` ? " highlight" : ""}`}
+          aria-label={p.heading ?? undefined}
+        >
           {p.overridden_by_firm && p.firm_note && (
             <div className="firm-note">
               <span className="badge badge-pending">

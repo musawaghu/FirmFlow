@@ -117,7 +117,9 @@ export function EmployeeHome() {
                       {!list.final_check_unlocked && <Icon name="lock" size={12} />}
                     </span>
                     <span className="check-body">
-                      <span className="check-title">Pass the final check</span>
+                      <Link to="/app/final-check" className="check-title">
+                        Pass the final check
+                      </Link>
                       <span className="small">
                         {list.final_check_unlocked ? "Unlocked: every required module is done." : "Unlocks when every required module is done."}
                       </span>
@@ -159,7 +161,11 @@ function FinalCheckNote({ unlocked }: { unlocked: boolean }) {
   return (
     <div className="status-row small">
       <Icon name={unlocked ? "star" : "lock"} size={16} />
-      {unlocked ? "Your final check is unlocked." : "The final check unlocks when every required module is done."}
+      {unlocked ? (
+        <Link to="/app/final-check">Your final check is unlocked. Take it now.</Link>
+      ) : (
+        "The final check unlocks when every required module is done."
+      )}
     </div>
   );
 }

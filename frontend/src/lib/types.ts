@@ -119,6 +119,7 @@ export interface BaselineModule {
 
 export interface AdminPassage {
   id: string;
+  source_section_id: string;
   ordinal: number;
   heading: string | null;
   content: string;
@@ -137,4 +138,115 @@ export interface AdminModule {
   is_required: boolean;
   status: string;
   passages: AdminPassage[];
+}
+
+// Final check
+export interface AttemptQuestion {
+  id: string;
+  type: "multiple_choice" | "scenario";
+  prompt: string;
+  choices: string[] | null;
+  state: "unanswered" | "missed" | "correct";
+  tries: number;
+  link: SectionLink | null; // shown once the question has been missed
+}
+
+export interface Attempt {
+  id: string;
+  status: "in_progress" | "completed";
+  score: number | null;
+  started_at: string;
+  completed_at: string | null;
+  questions: AttemptQuestion[];
+}
+
+export interface AnswerResult {
+  question_id: string;
+  is_correct: boolean;
+  feedback: string;
+  try_number: number;
+  link: SectionLink | null;
+  attempt: Attempt;
+}
+
+// "Who do I ask?"
+export interface ContactCard {
+  person_id: string;
+  name: string;
+  title: string;
+  department: string;
+  email: string;
+  phone_ext: string | null;
+  working_hours: string;
+  is_in_today: boolean;
+  out_of_office_until: string | null;
+  reason: string;
+  mailto: string;
+  backup: ContactCard | null;
+}
+
+export interface ChatReply {
+  intent: string;
+  answer: string;
+  links: SectionLink[];
+  contacts: ContactCard[];
+  used_fallback: boolean;
+}
+
+// Manuals
+export interface Manual {
+  id: string;
+  title: string;
+  file_type: string;
+  page_count: number | null;
+  status: "uploaded" | "processing" | "processed" | "failed";
+  error: string | null;
+  processing_notes: { warnings?: string[]; input_tokens?: number; output_tokens?: number; [k: string]: unknown };
+  created_at: string;
+}
+
+export interface SourceSection {
+  id: string;
+  ordinal: number;
+  heading: string | null;
+  content: string;
+  page_start: number | null;
+  page_end: number | null;
+}
+
+export interface PassageRef {
+  passage_id: string;
+  heading: string | null;
+  module_id: string;
+  module_title: string;
+}
+
+export interface Override {
+  id: string;
+  status: "proposed" | "confirmed" | "dismissed";
+  difference: string;
+  firm_excerpt: string;
+  baseline_excerpt: string;
+  firm_passage: PassageRef;
+  baseline_passage: PassageRef;
+}
+
+export interface Review {
+  manual: Manual;
+  sections: SourceSection[];
+  modules: AdminModule[];
+  overrides: Override[];
+}
+
+export interface Issue {
+  id: string;
+  type: string;
+  description: string;
+  excerpt: string | null;
+  status: string;
+  module_id: string | null;
+  source_section_id: string | null;
+  related_section_id: string | null;
+  section_heading: string | null;
+  pages: string | null;
 }
