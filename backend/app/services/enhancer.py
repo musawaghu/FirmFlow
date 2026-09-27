@@ -26,6 +26,7 @@ from app.services.parser import SourceSection
 
 MAX_TOKENS = 128_000
 EFFORT = "high"
+DEADLINE = 900.0  # seconds; a whole manual has taken about 5 minutes
 
 
 class EnhanceError(Exception):
@@ -202,6 +203,7 @@ def enhance_manual(
             effort=EFFORT,
             client=client,
             model=model,
+            deadline=DEADLINE,
         )
     except LLMError as exc:
         raise EnhanceError(str(exc)) from exc

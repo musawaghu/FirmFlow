@@ -11,7 +11,9 @@ from pydantic import BaseModel
 
 from app.auth import Profile, get_current_profile, require_admin
 from app.db import Repo, Row, get_repo
+from app.ratelimit import rate_limit
 from app.schemas import AnswerOut, AttemptOut, GenerateOut, QuestionOut
+from app.services.content import firm_content
 from app.services.parser import SourceSection
 from app.services.progress import final_check_unlocked, load_progress, required_progress
 from app.services.quiz import (
@@ -80,10 +82,9 @@ def section_links(repo: Repo, passage_ids: list[str]) -> dict[str, dict]:
 
 
 def _eligible_passages(repo: Repo, firm_id: str) -> tuple[dict[str, Row], dict[str, Row]]:
-    """Critical passages in approved modules, and those modules, keyed by id."""
-    modules = {m["id"]: m for m in repo.select("modules", {"firm_id": firm_id, "status": "approved"})}
-    passages = repo.select("module_passages", {"module_id": list(modules), "is_critical": True}, order="ordinal")
-    return {p["id"]: p for p in passages}, modules
+    """Critical passages in the firm's approved firm and baseline modules, and those modules, keyed by id."""
+    content = firm_content(repo, firm_id)
+    return {p["id"]: p for p in content.critical_passages()}, {m["id"]: m for m in content.modules}
 
 
 def _question_out(question: Row, links: dict[str, dict]) -> dict:
@@ -103,7 +104,8 @@ def _source_for(repo: Repo, passage_id: str) -> SourceSection:
 # Admin: question bank
 # ---------------------------------------------------------------------------
 
-@router.post("/generate", response_model=GenerateOut, status_code=status.HTTP_201_CREATED)
+@router.post("/generate", response_model=GenerateOut, status_code=status.HTTP_201_CREATED,
+             dependencies=[Depends(rate_limit("quiz_generate"))])
 def generate(profile: Profile = Depends(require_admin), repo: Repo = Depends(get_repo)):
     """Draft questions from the critical passages in approved modules.
 
@@ -278,7 +280,7 @@ def current_attempt(profile: Profile = Depends(get_current_profile), repo: Repo 
     return _attempt_view(repo, (in_progress or attempts)[-1])
 
 
-@router.post("/attempts/{attempt_id}/answers", response_model=AnswerOut)
+@router.post("/attempts/{attempt_id}/answers", response_model=AnswerOut, dependencies=[Depends(rate_limit("quiz_answer"))])
 def answer(attempt_id: str, body: AnswerIn, profile: Profile = Depends(get_current_profile), repo: Repo = Depends(get_repo)):
     """Answer one question and get instant feedback. Missed questions can be answered again."""
     attempt = _get_attempt(repo, profile, attempt_id)

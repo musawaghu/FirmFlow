@@ -13,7 +13,10 @@ class Settings(BaseSettings):
     supabase_anon_key: str = ""  # only used by scripts/get_token.py
     anthropic_api_key: str = ""
     anthropic_model: str = "claude-opus-5"
-    frontend_origin: str = "http://localhost:5173"
+    frontend_origin: str = "http://localhost:5173"  # comma-separate several origins
+    # "production" turns off the interactive API docs and turns on HSTS.
+    environment: str = "development"
+    rate_limits_enabled: bool = True
     # Pins "today" for contact-card availability (YYYY-MM-DD), so a demo on a
     # weekend still shows who's in. Leave empty to use the real date.
     demo_date: date | None = None
@@ -22,6 +25,14 @@ class Settings(BaseSettings):
     @classmethod
     def empty_demo_date(cls, v):
         return v or None
+
+    @property
+    def frontend_origins(self) -> list[str]:
+        return [o.strip().rstrip("/") for o in self.frontend_origin.split(",") if o.strip()]
+
+    @property
+    def is_production(self) -> bool:
+        return self.environment.strip().lower() == "production"
 
 
 @lru_cache

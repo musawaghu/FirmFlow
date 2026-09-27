@@ -24,6 +24,8 @@ MAX_QUESTIONS = 7
 MIN_SCENARIOS = 2
 MAX_SCENARIOS = 3
 MAX_ANSWER_CHARS = 2000
+GENERATE_DEADLINE = 300.0  # seconds
+GRADE_DEADLINE = 90.0  # seconds; the employee is waiting
 
 
 class QuizError(Exception):
@@ -132,6 +134,7 @@ def generate_questions(
             effort="high",
             client=client,
             model=model,
+            deadline=GENERATE_DEADLINE,
         )
     except LLMError as exc:
         raise QuizError(str(exc)) from exc
@@ -280,6 +283,7 @@ def grade_scenario(
             effort="medium",  # the employee is waiting on this
             client=client,
             model=model,
+            deadline=GRADE_DEADLINE,
         )
     except LLMError as exc:
         raise QuizError(str(exc)) from exc

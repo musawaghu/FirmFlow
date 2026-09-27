@@ -13,6 +13,7 @@ from __future__ import annotations
 import json
 import logging
 import re
+import time
 from dataclasses import dataclass, field
 from datetime import date
 from typing import Literal
@@ -23,11 +24,12 @@ from pydantic import BaseModel, Field
 from app.config import get_settings
 from app.db import Row
 from app.services.directory import PROJECT_ROLES, Directory
-from app.services.llm import FALLBACK_BETA
+from app.services.llm import CONNECT_TIMEOUT, FALLBACK_BETA, claude_client
 
 log = logging.getLogger(__name__)
 
 MAX_TURNS = 6  # model calls per question, tool rounds included
+DEADLINE = 60.0  # seconds for the whole answer; past it the employee gets the default contact
 MAX_CITATIONS = 3
 EFFORT = "medium"
 EMAIL_RE = re.compile(r"[\w.+-]+@[\w-]+(?:\.[\w-]+)+")
@@ -216,7 +218,7 @@ def ask(
     model: str | None = None,
 ) -> AssistantResult:
     settings = get_settings()
-    client = client or anthropic.Anthropic(api_key=settings.anthropic_api_key or None)
+    client = client or claude_client()
     model = model or settings.anthropic_model
     today = today or directory.today()
 
@@ -226,9 +228,15 @@ def ask(
     messages: list[dict] = [{"role": "user", "content": f"<question>\n{question}\n</question>"}]
     usage = [0, 0]
 
+    started = time.monotonic()
     try:
         for _ in range(MAX_TURNS):
-            response = client.beta.messages.parse(
+            remaining = DEADLINE - (time.monotonic() - started)
+            if remaining <= 1:
+                return _fallback(directory, today, employee_name, usage, "Took too long")
+            # No retries: a retry would outlast the deadline, and the fallback contact is a fine answer.
+            bounded = client.with_options(timeout=anthropic.Timeout(remaining, connect=CONNECT_TIMEOUT), max_retries=0)
+            response = bounded.beta.messages.parse(
                 model=model,
                 max_tokens=16_000,
                 thinking={"type": "adaptive"},
