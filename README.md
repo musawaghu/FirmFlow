@@ -247,13 +247,6 @@ cd backend
 .venv/bin/python -m scripts.reset_demo   # Alex Rivera by default
 ```
 
-## Roadmap
-
-- ADP / Paycor and live calendar integration
-- Slack and intranet ingestion
-- Mentor/mentee matching
-- A Revit plugin that surfaces firm guidance inside Revit
-- Multi-firm accounts and embeddings search for large firms
 
 ## Team
 
