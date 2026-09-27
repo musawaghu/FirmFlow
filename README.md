@@ -6,6 +6,19 @@ FIRM FLOW takes the onboarding material a firm already has and turns it into cle
 
 Built at an AEC hackathon by a team with one architect and four computer science students.
 
+## Try it
+
+**Live demo: https://firmflow-iota.vercel.app**
+
+Click **Log in**, choose Admin or Employee, and sign in to the demo firm, Studio Meridian Architects. The password is in our submission.
+
+| Role | Email | What to try |
+| --- | --- | --- |
+| Employee (new intern Alex) | `alex.rivera@studiomeridian.example` | The Day 1 / Week 1 / First month checklist, a module (Drawing Set Organization shows the firm's rule overriding the AEC baseline), **Who do I ask?**, and the final check once the required modules are done |
+| Admin (office manager Priya) | `priya.raman@studiomeridian.example` | The onboarding dashboard, **Manuals and review** (the manual next to Claude's version, with flagged issues), and the module settings in the sidebar |
+
+A promo video is in the repo: [`FirmFlowPromo.mp4`](FirmFlowPromo.mp4).
+
 ---
 
 ## The problem
@@ -66,12 +79,12 @@ Contact cards show name, title, email, working hours, and whether the person is 
 
 | Layer | Choice |
 | --- | --- |
-| Frontend | React + TypeScript + Vite, Tailwind CSS, shadcn/ui, react-diff-viewer |
+| Frontend | React + TypeScript + Vite, React Router, plain CSS from the tokens in `Design.md` |
 | Backend | Python, FastAPI |
-| Database, auth, storage | Supabase (Postgres) |
-| AI | Claude API with tool calling |
+| Database, auth, storage | Supabase (Postgres, Auth, private storage bucket) |
+| AI | Claude API (Claude Opus 5): structured outputs, tool calling for the staff directory |
 | Document parsing | PyMuPDF, python-docx |
-| Hosting | Vercel (frontend), Render or Railway (backend) |
+| Hosting | Vercel (frontend), Google Cloud Run (backend) |
 
 ```mermaid
 flowchart LR
