@@ -85,7 +85,7 @@ flowchart LR
 
 ## Planned repository structure
 
-The repo also has two early prototypes: an HTML + PyScript version (`index.html`, `css/`, `js/`, `py/`) and a Next.js mock-data version (`website-base/`). The backend, database, and sample manual are in place; this is the structure we're moving to:
+The repo also has two early prototypes: a static HTML + CSS version (`index.html`, `modules.html`, `module-detail.html`, `quiz.html`, `review.html`, `documents.html`, `css/`) and a Next.js mock-data version (`website-base/`). The backend, database, and sample manual are in place; this is the structure we're moving to:
 
 ```
 firm-flow/
@@ -151,6 +151,7 @@ uvicorn app.main:app --reload
 ```
 SUPABASE_URL=
 SUPABASE_SERVICE_ROLE_KEY=
+SUPABASE_ANON_KEY=    # only for scripts/get_token.py (logging in as a demo user)
 ANTHROPIC_API_KEY=
 ANTHROPIC_MODEL=
 FRONTEND_ORIGIN=http://localhost:5173   # comma-separate several origins
