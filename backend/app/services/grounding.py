@@ -29,6 +29,7 @@ from app.services.parser import SourceSection
 
 MAX_TOKENS = 64_000
 EFFORT = "high"
+DEADLINE = 300.0  # seconds; one batch of passages
 BATCH_SIZE = 40  # passages per model call
 
 
@@ -331,6 +332,7 @@ def _model_check(batch, result: GroundingResult, *, client, model) -> None:
             effort=EFFORT,
             client=client,
             model=model,
+            deadline=DEADLINE,
         )
     except LLMError as exc:
         raise GroundingError(str(exc)) from exc
