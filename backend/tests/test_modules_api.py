@@ -210,7 +210,9 @@ def test_employees_see_only_approved_modules_in_priority_order(api, repo, seeded
     assert res["full_name"] == "Alex Rivera"
     assert [m["title"] for m in res["modules"]] == ["How to Use BIM", "Studio History"]  # Timesheets is still a draft
     assert all(m["progress"] == "not_started" for m in res["modules"])
-    assert set(res["modules"][0]["passages"][0]) == {"id", "ordinal", "heading", "content", "kind"}  # no grounding details
+    assert set(res["modules"][0]["passages"][0]) == {  # no grounding details
+        "id", "ordinal", "heading", "content", "kind", "overridden_by_firm", "firm_note", "firm_passage_id"}
+    assert res["modules"][0]["layer"] == "firm"
     assert (res["required_modules"], res["completed_required"], res["final_check_unlocked"]) == (1, 0, False)
 
     assert api.get("/api/modules", headers=auth("admin-b")).json()["modules"][0]["title"] == "Other"

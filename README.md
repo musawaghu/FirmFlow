@@ -12,6 +12,15 @@ Built at an AEC hackathon by a team with one architect and four computer science
 
 Onboarding at architecture firms is usually a long static manual, an intranet full of broken links, and a lot of questions to busy senior staff. Nothing separates what you need on Day 1 from what can wait. Firm-specific BIM practices, like how to safely copy a Revit central model or read keynotes, are rarely taught until something breaks.
 
+## Two layers of content
+
+Every firm's onboarding is built from two layers:
+
+- **AEC baseline, shared by every firm:** general practice such as Revit worksharing basics, central vs. local models, BIM Execution Plans, file naming conventions, drawing set organization, and consultant coordination, plus a "Getting Started at an AEC Firm" module drawn from our architect's own first weeks. The baseline is a guide written once and reviewed by a licensed architect (`samples/aec_baseline_guide.pdf`). It goes through the same enhancer and grounding check as a firm manual, so baseline passages are traceable too.
+- **Firm overlay:** each firm's own manual (templates, standards, policies), project directory, and people. A firm admin chooses which baseline modules its employees see, their priority and order, and which baseline passages are critical for the final check.
+
+**Where they conflict, the firm wins.** When a firm manual is processed, the AI compares it with the baseline and proposes overrides, quoting both passages ("Our firm names sheets like A-101, not A1.01"). Once the admin confirms an override, employees see the firm's rule in place of the baseline one, with a note: "Studio Meridian Architects does this differently." The final check and the assistant use the firm's version too.
+
 ## Features
 
 ### 1. Manual Enhancer (admin)
@@ -51,6 +60,7 @@ Contact cards show name, title, email, working hours, and whether the person is 
 | Flag, don't fix | Problems go to the `issues` table for the admin |
 | Humans approve | Modules and quiz questions start as `draft`; employees only see `approved` |
 | Real people only | Contacts come from `people`, `responsibilities`, and `project_roles` rows |
+| Firm wins, visibly | Baseline overrides quote both passages verbatim and need admin confirmation; the note employees see is fixed text |
 
 ## Tech stack
 
@@ -114,6 +124,16 @@ firm-flow/
 
 In the Supabase SQL editor, run `supabase/schema.sql`, then `supabase/seed.sql` for the demo firm (Studio Meridian Architects). Create a storage bucket named `manuals` for uploads.
 
+A database created before the baseline layer existed needs `supabase/migrations/002_baseline_overlay.sql` once.
+
+Then load the AEC baseline (calls Claude). Review the printout with a licensed architect before approving it:
+
+```bash
+cd backend
+.venv/bin/python -m scripts.load_baseline            # upload and process; prints the modules for review
+.venv/bin/python -m scripts.load_baseline --approve  # publish the baseline to every firm
+```
+
 RLS is enabled on every table with no policies, so only the backend (using the service role key) can read and write data. The frontend uses Supabase only for login.
 
 ### 2. Backend
@@ -167,14 +187,19 @@ Never commit `.env` files. The service role key must stay on the backend.
 | GET | `/api/manuals/{id}/review` | Admin | Draft modules and passages side by side with source sections |
 | GET | `/api/manuals/{id}/issues` | Admin | Flagged problems in reading order; optional `?status=open` |
 | PATCH | `/api/modules/{id}` | Admin | Approve, reject, or return to draft; set priority, required, order; edit title and summary (draft only). Approval needs every passage grounded, or `confirm_flagged: true` |
-| PATCH | `/api/passages/{id}` | Admin | Edit content, heading, or kind (draft modules only; re-runs the grounding check), or mark critical |
+| PATCH | `/api/passages/{id}` | Admin | Edit content, heading, or kind (draft modules only; re-runs the grounding check), or mark critical. On a baseline passage, only `is_critical` (for this firm) |
 | POST | `/api/quiz/generate` | Admin | Draft 5–7 questions from critical passages in approved modules (replaces drafts; refused once any question is approved) |
 | GET | `/api/quiz/questions` | Admin | The question bank with answer keys; optional `?status=` |
 | PATCH | `/api/quiz/questions/{id}` | Admin | Edit, approve, or reject a question (approved questions are locked) |
 | GET | `/api/admin/progress` | Admin | Per employee: stage, required modules completed, each module's status, final check status and score, last activity |
 | GET | `/api/admin/failed-questions` | Admin | Most-failed questions |
 | GET | `/api/admin/unanswered` | Admin | Assistant questions that fell back to the default contact, newest first (personal matters show only the topic) |
-| GET | `/api/modules` | Employee | Approved modules (Day 1 first) with own progress and whether the final check is unlocked |
+| GET | `/api/baseline/modules` | Admin | The shared AEC baseline modules with this firm's settings (including hidden ones) |
+| PATCH | `/api/baseline/modules/{id}` | Admin | This firm's priority, required flag, order, or visibility for a baseline module |
+| GET | `/api/manuals/{id}/overrides` | Admin | Where this manual states a different practice than the baseline; optional `?status=` |
+| POST | `/api/manuals/{id}/overrides/detect` | Admin | Compare the manual with the baseline again (runs automatically when a manual is processed) |
+| PATCH | `/api/overrides/{id}` | Admin | Confirm (employees see the firm's version) or dismiss an override |
+| GET | `/api/modules` | Employee | Approved firm and baseline modules (Day 1 first) with own progress and whether the final check is unlocked; overridden baseline passages show the firm's version and a note |
 | POST | `/api/modules/{id}/progress` | Employee | Start or complete a module (`{"status": "in_progress" \| "completed"}`) |
 | POST | `/api/quiz/attempts` | Employee | Start the final check, or resume the one in progress (unlocks after all required modules) |
 | GET | `/api/quiz/attempts/current` | Employee | The attempt in progress, or the latest one |
@@ -184,8 +209,8 @@ Never commit `.env` files. The service role key must stay on the backend.
 ## Demo walkthrough
 
 1. Admin uploads a messy sample manual and reviews enhanced modules next to the original, with broken links flagged.
-2. Admin approves a module and marks it Day 1 and critical.
-3. Intern logs in, sees their progress, and completes a module.
+2. Admin approves a module and marks it Day 1 and critical, and confirms the proposed baseline override: Studio Meridian numbers sheets A-101, the baseline A1.01.
+3. Intern logs in and sees their progress: the firm's modules, then the shared AEC baseline. In Drawing Set Organization, the sheet-number rule is the firm's, marked "Studio Meridian Architects does this differently." They complete a module.
 4. Intern asks, "I had a problem with my payroll, who can help?" The payroll manager is out, so the card shows the backup.
 5. Intern takes the final check, misses the Revit scenario, and gets a link back to the BIM module.
 6. Admin sees progress and the most-failed question.

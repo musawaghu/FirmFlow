@@ -14,12 +14,11 @@ from app.db import Repo, Row, get_repo
 from app.schemas import ModuleListOut, ModuleOut, PassageEditOut, ProgressOut
 from app.services.grounding import GroundingError, PassageInput, check_passages
 from app.services.parser import SourceSection
-from app.services.progress import final_check_unlocked, load_progress, required_progress
+from app.services.content import baseline_firm_id, firm_content
+from app.services.progress import final_check_unlocked, profile_progress, required_progress
 
 router = APIRouter(prefix="/api/modules", tags=["modules"])
 passages_router = APIRouter(prefix="/api/passages", tags=["modules"])
-
-PRIORITY_ORDER = {"day_1": 0, "week_1": 1, "later": 2}
 
 
 # ---------------------------------------------------------------------------
@@ -79,11 +78,8 @@ def _valid_uuid(value: str) -> bool:
     return True
 
 
-def _get_module(repo: Repo, profile: Profile, module_id: str, approved_only: bool = False) -> Row:
-    filters = {"id": module_id, "firm_id": profile.firm_id}
-    if approved_only:
-        filters["status"] = "approved"
-    module = repo.select_one("modules", filters) if _valid_uuid(module_id) else None
+def _get_module(repo: Repo, profile: Profile, module_id: str) -> Row:
+    module = repo.select_one("modules", {"id": module_id, "firm_id": profile.firm_id}) if _valid_uuid(module_id) else None
     if module is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Module not found")
     return module
@@ -163,6 +159,10 @@ def update_passage(
     """
     passage = repo.select_one("module_passages", {"id": passage_id}) if _valid_uuid(passage_id) else None
     module = repo.select_one("modules", {"id": passage["module_id"], "firm_id": profile.firm_id}) if passage else None
+    if passage is not None and module is None:
+        baseline = repo.select_one("modules", {"id": passage["module_id"], "firm_id": baseline_firm_id(repo), "status": "approved"})
+        if baseline is not None:
+            return _set_baseline_critical(repo, profile, passage, body)
     if passage is None or module is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Passage not found")
 
@@ -206,25 +206,38 @@ def update_passage(
     return {**passage, "grounding_error": grounding_error}
 
 
+def _set_baseline_critical(repo: Repo, profile: Profile, passage: Row, body: PassageUpdate) -> Row:
+    """Baseline passages are shared by every firm: a firm can only choose whether one is critical for it."""
+    if body.model_fields_set - {"is_critical"}:
+        raise HTTPException(
+            status.HTTP_409_CONFLICT,
+            "Baseline passages are shared by every firm and can't be edited. To use a different rule, "
+            "put it in your firm's manual; it will override this passage.",
+        )
+    if body.is_critical is not None:
+        existing = repo.select_one("firm_baseline_passages", {"firm_id": profile.firm_id, "passage_id": passage["id"]})
+        if existing:
+            repo.update("firm_baseline_passages", existing["id"], {"is_critical": body.is_critical})
+        else:
+            repo.insert("firm_baseline_passages", [{"firm_id": profile.firm_id, "passage_id": passage["id"], "is_critical": body.is_critical}])
+    row = repo.select_one("firm_baseline_passages", {"firm_id": profile.firm_id, "passage_id": passage["id"]})
+    return {**passage, "is_critical": bool(row and row["is_critical"]), "grounding_error": None}
+
+
 # ---------------------------------------------------------------------------
 # Employees: approved modules and progress
 # ---------------------------------------------------------------------------
 
 @router.get("", response_model=ModuleListOut)
 def list_modules(profile: Profile = Depends(get_current_profile), repo: Repo = Depends(get_repo)):
-    """Approved modules, Day 1 first, with the caller's own progress."""
-    modules, progress = load_progress(repo, profile.firm_id, profile.id)
-    modules.sort(key=lambda m: (PRIORITY_ORDER.get(m["priority"], 9), m["ordinal"], m["title"]))
-    passages = repo.select("module_passages", {"module_id": [m["id"] for m in modules]}, order="ordinal")
-
-    by_module: dict[str, list[Row]] = {}
-    for p in passages:
-        by_module.setdefault(p["module_id"], []).append(p)
+    """Approved firm and baseline modules, Day 1 first, with the caller's own progress."""
+    content = firm_content(repo, profile.firm_id)
+    progress = profile_progress(repo, profile.id)
     out = [
-        {**m, "progress": progress.get(m["id"], "not_started"), "passages": by_module.get(m["id"], [])}
-        for m in modules
+        {**m, "progress": progress.get(m["id"], "not_started"), "passages": content.passages_for(m["id"])}
+        for m in content.modules
     ]
-    required, completed = required_progress(modules, progress)
+    required, completed = required_progress(content.modules, progress)
     return {
         "full_name": profile.full_name,
         "required_modules": required,
@@ -242,7 +255,8 @@ def update_progress(
     repo: Repo = Depends(get_repo),
 ):
     """Mark an approved module started or completed. Completed modules stay completed."""
-    _get_module(repo, profile, module_id, approved_only=True)
+    if firm_content(repo, profile.firm_id).module(module_id) is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Module not found")
     now = _now()
     existing = repo.select_one("module_progress", {"profile_id": profile.id, "module_id": module_id})
 
