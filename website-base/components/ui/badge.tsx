@@ -4,24 +4,24 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "cn"
 
 const badgeVariants = cva(
-  "group/badge inline-flex h-5 w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-4xl border border-transparent px-2 py-0.5 text-xs font-medium whitespace-nowrap transition-all focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&>svg]:pointer-events-none [&>svg]:size-3!",
+  "group/badge inline-flex h-6 w-fit shrink-0 items-center justify-center gap-1 overflow-hidden border-[2px] border-[var(--color-black)] px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide whitespace-nowrap transition-all duration-200 focus-visible:border-[var(--color-primary)] focus-visible:ring-[3px] focus-visible:ring-[var(--color-primary)]/50 has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 aria-invalid:border-destructive aria-invalid:ring-destructive/20 [&>svg]:pointer-events-none [&>svg]:size-3!",
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground [a]:hover:bg-primary/80",
+        default: 'bg-[var(--color-primary)] text-[var(--color-white)] [a]:hover:bg-[var(--color-primary-hover)]',
         secondary:
-          "bg-secondary text-secondary-foreground [a]:hover:bg-secondary/80",
+          'bg-[var(--color-offwhite)] text-[var(--color-black)] [a]:hover:bg-[var(--color-offwhite)]',
         destructive:
-          "bg-destructive/10 text-destructive focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:focus-visible:ring-destructive/40 [a]:hover:bg-destructive/20",
+          'bg-[var(--color-primary)] text-[var(--color-white)] focus-visible:ring-destructive/20 [a]:hover:bg-[var(--color-primary-hover)]',
         outline:
-          "border-border text-foreground [a]:hover:bg-muted [a]:hover:text-muted-foreground",
+          'bg-[var(--color-white)] text-[var(--color-black)] [a]:hover:bg-[var(--color-offwhite)]',
         ghost:
-          "hover:bg-muted hover:text-muted-foreground dark:hover:bg-muted/50",
-        link: "text-primary underline-offset-4 hover:underline",
+          'border-transparent bg-transparent text-[var(--color-black)] hover:bg-[var(--color-offwhite)]',
+        link: 'border-transparent bg-transparent p-0 text-[var(--color-primary)] underline-offset-4 hover:underline',
       },
     },
     defaultVariants: {
-      variant: "default",
+      variant: 'default',
     },
   }
 )

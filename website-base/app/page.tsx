@@ -34,34 +34,32 @@ export default function LoginPage() {
 
   return (
     <main className="flex min-h-screen flex-col lg:flex-row">
-      {/* Brand / value panel */}
-      <section className="relative flex flex-1 flex-col justify-between overflow-hidden bg-primary px-8 py-10 text-primary-foreground lg:px-14 lg:py-14">
-        <Logo className="[&_span:last-child]:text-white [&_.bg-primary]:bg-white [&_.bg-primary]:text-primary" />
+      <section className="relative flex flex-1 flex-col justify-between overflow-hidden border-r-[2px] border-[var(--color-black)] bg-[var(--color-black)] px-8 py-10 text-[var(--color-white)] lg:px-14 lg:py-14">
+        <Logo className="[&_span:last-child]:text-[var(--color-white)] [&_.bg-primary]:bg-[var(--color-white)] [&_.bg-primary]:text-[var(--color-black)]" />
         <div className="max-w-md">
-          <h1 className="text-balance text-3xl font-bold leading-tight lg:text-4xl">
+          <h1 className="text-balance text-3xl font-bold leading-tight lg:text-4xl" style={{ fontFamily: 'var(--font-title)' }}>
             Onboarding for architects, made clear and trackable.
           </h1>
-          <p className="mt-4 text-pretty text-sm leading-relaxed text-primary-foreground/85 lg:text-base">
+          <p className="mt-4 text-pretty text-sm leading-relaxed text-[var(--color-white)]/80 lg:text-base">
             Structured modules, guided quizzes, and a personal checklist so every new team member
             knows exactly what matters on Day 1 and beyond.
           </p>
-          <ul className="mt-6 space-y-2 text-sm text-primary-foreground/85">
-            {["Multimodal, organized content", "Trackable progress", "Interactive support & mentors"].map((f) => (
+          <ul className="mt-6 space-y-2 text-sm text-[var(--color-white)]/80">
+            {['Multimodal, organized content', 'Trackable progress', 'Interactive support & mentors'].map((f) => (
               <li key={f} className="flex items-center gap-2">
-                <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-white" />
+                <span aria-hidden className="h-2 w-2 border-[2px] border-[var(--color-white)] bg-[var(--color-primary)]" />
                 {f}
               </li>
             ))}
           </ul>
         </div>
-        <p className="text-xs text-primary-foreground/70">Internal knowledge platform</p>
+        <p className="text-xs text-[var(--color-white)]/70">Internal knowledge platform</p>
       </section>
 
-      {/* Login form */}
-      <section className="flex flex-1 items-center justify-center bg-background px-6 py-12">
+      <section className="flex flex-1 items-center justify-center bg-[var(--color-bg)] px-6 py-12">
         <div className="w-full max-w-sm">
-          <h2 className="text-2xl font-semibold text-foreground">Welcome back</h2>
-          <p className="mt-1 text-sm text-muted-foreground">Sign in to continue your onboarding.</p>
+          <h2 className="text-2xl font-semibold text-[var(--color-black)]">Welcome back</h2>
+          <p className="mt-1 text-sm text-[var(--color-black)]/70">Sign in to continue your onboarding.</p>
 
           <form onSubmit={handleSubmit} className="mt-8 space-y-4">
             <div className="space-y-2">
@@ -89,7 +87,7 @@ export default function LoginPage() {
               />
             </div>
             {error && (
-              <p role="alert" className="text-sm text-destructive">
+              <p role="alert" className="text-sm text-[var(--color-primary)]">
                 {error}
               </p>
             )}
@@ -98,32 +96,32 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          <Card className="mt-8 border-dashed bg-muted/40">
+          <Card className="mt-8 bg-[var(--color-offwhite)]">
             <CardContent className="space-y-3 py-4">
-              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+              <p className="text-xs font-semibold uppercase tracking-wide text-[var(--color-black)]/70">
                 Demo accounts
               </p>
               <button
                 type="button"
                 onClick={() => quickFill("ava@firmflow.com", "welcome")}
-                className="flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm transition-colors hover:bg-secondary"
+                className="flex w-full items-center justify-between border-[2px] border-[var(--color-black)] bg-[var(--color-white)] px-3 py-2 text-left text-sm transition-colors hover:bg-[var(--color-offwhite)]"
               >
                 <span>
-                  <span className="font-medium text-foreground">New employee</span>
-                  <span className="block text-xs text-muted-foreground">ava@firmflow.com</span>
+                  <span className="block font-medium text-[var(--color-black)]">New employee</span>
+                  <span className="block text-xs text-[var(--color-black)]/70">ava@firmflow.com</span>
                 </span>
-                <span className="text-xs text-muted-foreground">welcome</span>
+                <span className="text-xs font-semibold text-[var(--color-black)]">welcome</span>
               </button>
               <button
                 type="button"
                 onClick={() => quickFill("admin@firmflow.com", "admin123")}
-                className="flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm transition-colors hover:bg-secondary"
+                className="flex w-full items-center justify-between border-[2px] border-[var(--color-black)] bg-[var(--color-white)] px-3 py-2 text-left text-sm transition-colors hover:bg-[var(--color-offwhite)]"
               >
                 <span>
-                  <span className="font-medium text-foreground">Admin</span>
-                  <span className="block text-xs text-muted-foreground">admin@firmflow.com</span>
+                  <span className="block font-medium text-[var(--color-black)]">Admin</span>
+                  <span className="block text-xs text-[var(--color-black)]/70">admin@firmflow.com</span>
                 </span>
-                <span className="text-xs text-muted-foreground">admin123</span>
+                <span className="text-xs font-semibold text-[var(--color-black)]">admin123</span>
               </button>
             </CardContent>
           </Card>

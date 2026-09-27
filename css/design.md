@@ -257,7 +257,22 @@ This pattern is designed for onboarding, training, and compliance workflows wher
 
 ---
 
-## 9. Accessibility Floor
+## 9. Final Implementation Notes
+
+The live portal UI should resolve to the following composition:
+
+- Top navigation is a black band with the brand lockup left-aligned and a compact user identity block right-aligned.
+- Main pages sit on a white canvas with black borders and off-white supporting surfaces.
+- Statistics cards keep the same border-heavy block pattern, with the label in small uppercase tracking and the value in the heavy display face.
+- Module cards remain flat and rectangular, with small status pills that either read as a filled orange accent or soft neutral gray depending on completion state.
+- Checklist rows are plain left-aligned task items with a black checkbox and no extra decorative container on hover.
+- Module detail screens use a restrained stacked-card layout: an inline status row, a large page title, and bordered content panels with generous whitespace.
+
+The design system is intended to be implemented as a reusable set of design tokens and primitive component classes. Any future screen should derive from these rules rather than introducing local, one-off styling.
+
+---
+
+## 10. Accessibility Floor
 
 - Maintain WCAG AA contrast: black-on-white and white-on-black pairs pass cleanly; verify `--color-primary`/`--color-secondary` fills against white text at typical button sizes and increase font-weight rather than lightening the fill if a pairing runs close.
 - Every interactive element needs a visible keyboard focus state (a 2px offset outline in `--color-action` is consistent with the border language already in use).

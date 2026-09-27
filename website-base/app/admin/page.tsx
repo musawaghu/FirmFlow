@@ -89,16 +89,15 @@ export default function AdminPage() {
   if (!currentUser || currentUser.role !== "admin") return null
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[var(--color-bg)]">
       <AppHeader homeHref="/admin" />
 
       <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
         <div className="flex flex-col gap-1">
-          <p className="text-sm text-muted-foreground">Admin</p>
-          <h1 className="text-2xl font-bold text-foreground sm:text-3xl">Onboarding control</h1>
+          <p className="text-sm font-semibold uppercase tracking-[0.12em] text-[var(--color-black)]/70">Admin</p>
+          <h1 className="text-3xl font-bold text-[var(--color-black)] sm:text-4xl" style={{ fontFamily: 'var(--font-title)' }}>Onboarding control</h1>
         </div>
 
-        {/* Summary stats */}
         <div className="mt-6 grid gap-4 sm:grid-cols-4">
           <StatCard label="Employees" value={String(employees.length)} />
           <StatCard label="Modules" value={String(modules.length)} />
@@ -118,8 +117,8 @@ export default function AdminPage() {
 
           {/* MODULES */}
           <TabsContent value="modules" className="mt-6">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-foreground">Training modules</h2>
+            <div className="flex items-center justify-between gap-3">
+              <h2 className="text-lg font-semibold text-[var(--color-black)]">Training modules</h2>
               <Button
                 onClick={() => {
                   setEditing(null)
@@ -136,14 +135,14 @@ export default function AdminPage() {
                   <CardContent className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
-                        <h3 className="font-semibold text-foreground">{m.title}</h3>
+                        <h3 className="font-semibold text-[var(--color-black)]">{m.title}</h3>
                         <Badge variant="secondary" className="font-normal">
                           {m.category}
                         </Badge>
-                        {m.day1 && <Badge className="bg-accent text-accent-foreground">Day 1</Badge>}
+                        {m.day1 && <Badge className="bg-[var(--color-secondary)] text-[var(--color-black)]">Day 1</Badge>}
                       </div>
-                      <p className="mt-1 text-sm text-muted-foreground">{m.summary}</p>
-                      <p className="mt-1 text-xs text-muted-foreground">
+                      <p className="mt-1 text-sm text-[var(--color-black)]/70">{m.summary}</p>
+                      <p className="mt-1 text-xs text-[var(--color-black)]/70">
                         {m.sections.length} sections · {m.quiz.length} questions · {m.estimatedMinutes} min
                       </p>
                     </div>

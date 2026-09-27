@@ -43,29 +43,28 @@ export default function DashboardPage() {
   const otherModules = modules.filter((m) => !m.day1)
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[var(--color-bg)]">
       <AppHeader homeHref="/dashboard" />
 
       <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
         <div className="flex flex-col gap-1">
-          <p className="text-sm text-muted-foreground">Welcome back,</p>
-          <h1 className="text-2xl font-bold text-foreground sm:text-3xl">
+          <p className="text-sm font-medium uppercase tracking-[0.12em] text-[var(--color-black)]/70">Welcome back,</p>
+          <h1 className="text-3xl font-bold text-[var(--color-black)] sm:text-4xl" style={{ fontFamily: 'var(--font-title)' }}>
             {firstName} — {currentUser.title}
           </h1>
         </div>
 
-        {/* Stats */}
         <div className="mt-6 grid gap-4 sm:grid-cols-3">
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
+              <CardTitle className="text-sm font-semibold uppercase tracking-[0.08em] text-[var(--color-black)]/70">
                 Overall progress
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex items-end justify-between">
-                <span className="text-3xl font-bold text-foreground">{stats.percent}%</span>
-                <span className="text-sm text-muted-foreground">
+              <div className="flex items-end justify-between gap-3">
+                <span className="text-3xl font-bold text-[var(--color-black)]">{stats.percent}%</span>
+                <span className="text-sm text-[var(--color-black)]/70">
                   {stats.done}/{stats.total} modules
                 </span>
               </div>
@@ -75,15 +74,15 @@ export default function DashboardPage() {
 
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
+              <CardTitle className="text-sm font-semibold uppercase tracking-[0.08em] text-[var(--color-black)]/70">
                 Average quiz score
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <span className="text-3xl font-bold text-foreground">
+              <span className="text-3xl font-bold text-[var(--color-black)]">
                 {stats.avgScore === null ? "—" : `${stats.avgScore}%`}
               </span>
-              <p className="mt-3 text-sm text-muted-foreground">
+              <p className="mt-3 text-sm text-[var(--color-black)]/70">
                 {stats.avgScore === null
                   ? "Complete a module quiz to see your score."
                   : "Across completed module quizzes."}
@@ -93,20 +92,20 @@ export default function DashboardPage() {
 
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
+              <CardTitle className="text-sm font-semibold uppercase tracking-[0.08em] text-[var(--color-black)]/70">
                 Your mentor
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-3">
-                <Avatar className="h-11 w-11">
-                  <AvatarFallback className="bg-accent text-accent-foreground font-semibold">
+                <Avatar className="h-11 w-11 border-[var(--color-black)] bg-[var(--color-offwhite)]">
+                  <AvatarFallback className="bg-[var(--color-primary)] text-[var(--color-white)] font-semibold">
                     {mentor ? mentor.name.split(" ").map((p) => p[0]).join("") : "?"}
                   </AvatarFallback>
                 </Avatar>
                 <div>
-                  <p className="font-medium text-foreground">{mentor?.name ?? "To be assigned"}</p>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="font-medium text-[var(--color-black)]">{mentor?.name ?? "To be assigned"}</p>
+                  <p className="text-sm text-[var(--color-black)]/70">
                     {mentor ? mentor.title : "Check back soon"}
                   </p>
                 </div>
@@ -115,14 +114,13 @@ export default function DashboardPage() {
           </Card>
         </div>
 
-        {/* Content grid */}
         <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_320px]">
           <div className="space-y-8">
             {day1Modules.length > 0 && (
               <section>
                 <div className="flex items-center gap-2">
-                  <h2 className="text-lg font-semibold text-foreground">Start here</h2>
-                  <Badge className="bg-accent text-accent-foreground">Day 1</Badge>
+                  <h2 className="text-xl font-semibold text-[var(--color-black)]">Start here</h2>
+                  <Badge className="bg-[var(--color-secondary)] text-[var(--color-black)]">Day 1</Badge>
                 </div>
                 <div className="mt-4 grid gap-4 sm:grid-cols-2">
                   {day1Modules.map((m) => (
@@ -133,7 +131,7 @@ export default function DashboardPage() {
             )}
 
             <section>
-              <h2 className="text-lg font-semibold text-foreground">All modules</h2>
+              <h2 className="text-xl font-semibold text-[var(--color-black)]">All modules</h2>
               <div className="mt-4 grid gap-4 sm:grid-cols-2">
                 {otherModules.map((m) => (
                   <ModuleCard key={m.id} module={m} progress={progress.modules[m.id]} />
