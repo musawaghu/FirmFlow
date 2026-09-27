@@ -35,7 +35,7 @@ export default function LoginPage() {
   return (
     <main className="flex min-h-screen flex-col lg:flex-row">
       <section className="relative flex flex-1 flex-col justify-between overflow-hidden border-r-[2px] border-[var(--color-black)] bg-[var(--color-black)] px-8 py-10 text-[var(--color-white)] lg:px-14 lg:py-14">
-        <Logo className="[&_span:last-child]:text-[var(--color-white)] [&_.bg-primary]:bg-[var(--color-white)] [&_.bg-primary]:text-[var(--color-black)]" />
+        <Logo variant="dark" size="lg" />
         <div className="max-w-md">
           <h1 className="text-balance text-3xl font-bold leading-tight lg:text-4xl" style={{ fontFamily: 'var(--font-title)' }}>
             Onboarding for architects, made clear and trackable.
