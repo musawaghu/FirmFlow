@@ -1,0 +1,70 @@
+/* Copied verbatim from Design.md section 4. This is the only place colors, fonts,
+   radii, and border toggles are declared. Keep it in sync with Design.md. */
+
+:root {
+  /* ============ COLOR ============ */
+  --color-black: #1E1B1A;
+  --color-white: #FFFDF9;
+  --color-offwhite: #E1E6E1;
+
+  --color-primary: #F85A3E;
+  --color-primary-hover: #E63B2E;
+  --color-secondary: #FF7733;
+  --color-secondary-hover: #E15634;
+
+  /* Semantic aliases — reference these in components, not the raw colors above */
+  --color-bg: var(--color-white);
+  --color-bg-alt: var(--color-offwhite);
+  --color-bg-inverse: var(--color-black);
+  --color-text: var(--color-black);
+  --color-text-inverse: var(--color-white);
+  --color-action: var(--color-primary);
+  --color-action-hover: var(--color-primary-hover);
+  --color-flag: var(--color-secondary);
+  --color-flag-hover: var(--color-secondary-hover);
+
+  /* ============ TYPE ============ */
+  --font-title: 'Russo One', sans-serif;
+  --font-subtitle: 'Fira Sans', sans-serif;
+  --font-body: 'Overpass', sans-serif;
+
+  --fs-h1: 2.5rem;
+  --fs-h2: 1.5rem;
+  --fs-h3: 1.125rem;
+  --fs-body: 1rem;
+  --fs-small: 0.875rem;
+  --fs-label: 0.9375rem;
+
+  /* ============ BORDER — GLOBAL ============ */
+  --border-width: 2px;
+  --border-color: var(--color-black);
+
+  /* Radius */
+  --radius-flat: 0px;
+  --radius-hover: 6px;
+  --radius-transition: border-radius 0.18s ease;
+
+  /* ============ BORDER — PER-COMPONENT TOGGLES ============ */
+  /* Value is either `solid` (ON, default) or `none` (OFF).            */
+  /* To disable a category site-wide, change its value here — do not   */
+  /* override border in the component's own rule.                     */
+  --border-buttons: solid;
+  --border-inputs: solid;
+  --border-cards: solid;
+  --border-nav: solid;
+  --border-tables: solid;
+  --border-sections: solid;
+  --border-modals: solid;
+  --border-badges: solid;
+  --border-dropdowns: solid;
+  --border-avatars: solid;
+  --border-tabs: solid;
+  --border-tooltips: solid;
+
+  /* ============ SPACING (8px base grid) ============ */
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2rem;
+  --space-5: 3rem;
+}

@@ -247,3 +247,43 @@ def test_progress_only_on_approved_modules_in_own_firm(api, seeded):
     assert api.post(f"/api/modules/{seeded['bim']['id']}/progress", json=body, headers=auth("employee-a")).status_code == 404
     assert api.post(f"/api/modules/{seeded['other_firm']['id']}/progress", json=body, headers=auth("employee-a")).status_code == 404
     assert api.post(f"/api/modules/{seeded['other_firm']['id']}/progress", json={"status": "done"}, headers=auth("admin-b")).status_code == 422
+
+
+def test_concurrent_first_progress_request_uses_the_winners_row(api, repo, seeded, monkeypatch):
+    """Two requests race to create the row (a double click, React dev mode): the loser must not 500."""
+    approve(api, repo, seeded["timesheets"])
+    real_insert = repo.insert
+
+    def insert_after_losing_the_race(table, rows):
+        if table == "module_progress":
+            real_insert(table, [{**rows[0], "status": "in_progress"}])  # the other request got there first
+            raise RuntimeError('duplicate key value violates unique constraint "module_progress_profile_id_module_id_key"')
+        return real_insert(table, rows)
+
+    monkeypatch.setattr(repo, "insert", insert_after_losing_the_race)
+    url = f"/api/modules/{seeded['timesheets']['id']}/progress"
+    res = api.post(url, json={"status": "completed"}, headers=auth("employee-a"))
+    assert res.status_code == 200
+    assert res.json()["status"] == "completed" and res.json()["completed_at"]
+    assert len(repo.select("module_progress", {"profile_id": "user-employee-a"})) == 1
+
+
+def test_progress_insert_failure_without_a_row_still_errors(repo, seeded):
+    """Only a lost race is absorbed; any other insert failure surfaces."""
+    from fastapi.testclient import TestClient
+
+    from app import db
+    from app.auth import get_token_verifier
+    from app.main import app
+    from tests.conftest import TOKENS
+
+    repo.fail_on_insert = "module_progress"
+    app.dependency_overrides[db.get_repo] = lambda: repo
+    app.dependency_overrides[get_token_verifier] = lambda: TOKENS.get
+    try:
+        client = TestClient(app, raise_server_exceptions=False)
+        approve(client, repo, seeded["timesheets"])
+        res = client.post(f"/api/modules/{seeded['timesheets']['id']}/progress", json={"status": "in_progress"}, headers=auth("employee-a"))
+        assert res.status_code == 500
+    finally:
+        app.dependency_overrides.clear()

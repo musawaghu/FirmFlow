@@ -262,13 +262,20 @@ def update_progress(
     existing = repo.select_one("module_progress", {"profile_id": profile.id, "module_id": module_id})
 
     if existing is None:
-        return repo.insert("module_progress", [{
-            "profile_id": profile.id,
-            "module_id": module_id,
-            "status": body.status,
-            "started_at": now,
-            "completed_at": now if body.status == "completed" else None,
-        }])[0]
+        try:
+            return repo.insert("module_progress", [{
+                "profile_id": profile.id,
+                "module_id": module_id,
+                "status": body.status,
+                "started_at": now,
+                "completed_at": now if body.status == "completed" else None,
+            }])[0]
+        except Exception:
+            # A concurrent request (a double click, a second tab) created the row
+            # first and the unique constraint refused ours; use theirs.
+            existing = repo.select_one("module_progress", {"profile_id": profile.id, "module_id": module_id})
+            if existing is None:
+                raise
     if existing["status"] == "completed" or existing["status"] == body.status:
         return existing
     changes = {"status": body.status, "started_at": existing.get("started_at") or now}

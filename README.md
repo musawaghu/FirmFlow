@@ -83,31 +83,36 @@ flowchart LR
     API --> P[PyMuPDF / python-docx]
 ```
 
-## Planned repository structure
+## Repository structure
 
-The repo also has two early prototypes: a static HTML + CSS version (`index.html`, `modules.html`, `module-detail.html`, `quiz.html`, `review.html`, `documents.html`, `css/`) and a Next.js mock-data version (`website-base/`). The backend, database, and sample manual are in place; this is the structure we're moving to:
+`website-base/` is the team's earlier Next.js prototype with mock data.
 
 ```
 firm-flow/
-├── frontend/                 # React + TypeScript + Vite app
+├── frontend/                 # React + TypeScript + Vite app (styled by Design.md)
 │   └── src/
-│       ├── pages/            # Dashboard, Module, FinalCheck, Assistant, Admin/*
-│       ├── components/       # ContactCard, SideBySideReview, ProgressBar, ...
-│       └── lib/api.ts        # Calls to the FastAPI backend
+│       ├── pages/            # Landing, employee/* (home, module), admin/* (dashboard, module editor)
+│       ├── components/       # TopNav, LoginModal, Meter, BarList, PassageText, ...
+│       ├── lib/api.ts        # Typed calls to the FastAPI backend
+│       ├── lib/auth.tsx      # Supabase sign-in, role check via /api/me
+│       └── styles/tokens.css # The :root tokens, copied verbatim from Design.md
 ├── backend/
 │   └── app/
 │       ├── main.py
-│       ├── routers/          # manuals, modules, quiz, chat, admin
+│       ├── routers/          # account, manuals, modules, quiz, chat, admin, baseline
 │       ├── services/
 │       │   ├── parser.py     # PDF/DOCX → source_sections
 │       │   ├── enhancer.py   # source_sections → draft modules + issues
 │       │   ├── grounding.py  # checks passages against their source
+│       │   ├── overrides.py  # finds firm rules that replace baseline passages
+│       │   ├── content.py    # what a firm's employees see (firm + baseline)
 │       │   ├── quiz.py       # question generation + scenario grading
 │       │   └── assistant.py  # chat + directory tools
 │       └── db.py
 ├── supabase/
 │   ├── schema.sql            # Tables, enums, views, RLS
 │   └── seed.sql              # Demo firm, directory, projects
+├── Design.md                 # Design system: colors, type, borders, layout
 └── README.md
 ```
 
@@ -186,7 +191,7 @@ gcloud run deploy firmflow-api --source backend --region us-central1 \
   --allow-unauthenticated \
   --no-cpu-throttling --min-instances=1 --max-instances=1 \
   --timeout=900 --memory=1Gi --cpu=1 \
-  --set-env-vars="^|^ENVIRONMENT=production|SUPABASE_URL=<url>|ANTHROPIC_MODEL=claude-opus-5|FRONTEND_ORIGIN=http://localhost:5173|DEMO_DATE=2026-09-28" \
+  --set-env-vars="^|^ENVIRONMENT=production|SUPABASE_URL=<url>|ANTHROPIC_MODEL=claude-opus-5|FRONTEND_ORIGIN=https://firmflow-iota.vercel.app,http://localhost:5173|DEMO_DATE=2026-09-28" \
   --set-secrets=SUPABASE_SERVICE_ROLE_KEY=SUPABASE_SERVICE_ROLE_KEY:latest,ANTHROPIC_API_KEY=ANTHROPIC_API_KEY:latest
 ```
 
@@ -218,7 +223,23 @@ VITE_SUPABASE_ANON_KEY=
 VITE_API_URL=http://localhost:8000
 ```
 
+`VITE_SUPABASE_ANON_KEY` is the public anon key (the backend's `SUPABASE_ANON_KEY`); row level security stops it from reading any table. `VITE_API_URL` can point at the deployed backend instead. The dev server runs on port 5173, which the backend's default `FRONTEND_ORIGIN` allows.
+
+What's in the app:
+
+- **Landing page** (`/`): the problem, how FIRM FLOW solves it, and how it works. **Log in** (top right) asks whether you're an admin or an employee, and refuses an account of the other kind.
+- **Employee** (`/app`): modules in the left sidebar grouped by Day 1, Week 1, and First month; a home page with a progress chart, what's up next, and the onboarding checklist; module pages with the firm's notes where it overrides the AEC baseline. Opening a module starts it; **Mark as complete** finishes it.
+- **Admin** (`/admin`): who has finished onboarding, each new hire's progress and final check, and the sections new hires miss most on the final check. The left sidebar lists the firm's modules and the AEC baseline modules: set when each is due, whether it's required, whether baseline modules are shown, and which passages are critical for the final check. The firm's own module text can be edited (it goes back to draft and is re-checked against the manual).
+
 Never commit `.env` files. The service role key must stay on the backend.
+
+### Deploy the frontend (Vercel)
+
+Live at https://firmflow-iota.vercel.app (Vercel project `firmflow`). `frontend/vercel.json` sends every path to `index.html`, so links like `/app/final-check` work on refresh. The project's production environment variables are `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` (added as `--type config`: it's public by design), and `VITE_API_URL` (the Cloud Run URL). Vite bakes them in at build time, so redeploy after changing one.
+
+The project is connected to this GitHub repo with root directory `frontend`: a push to `master` deploys to production, and every pull request gets a preview build. To deploy by hand instead, run `vercel deploy --prod` from the repo root (the root directory setting points it at `frontend/`).
+
+The backend only answers browsers from origins in `FRONTEND_ORIGIN`. If the frontend's URL changes, add it there and redeploy the backend.
 
 ## Security and limits
 
@@ -245,6 +266,7 @@ Never commit `.env` files. The service role key must stay on the backend.
 
 | Method | Endpoint | Who | Purpose |
 | --- | --- | --- | --- |
+| GET | `/api/me` | Anyone signed in | The caller's name, role (`admin` or `employee`), and firm; the frontend uses it to open the right view |
 | POST | `/api/manuals` | Admin | Upload a manual (multipart `file`, optional `title`); it's parsed into source sections right away |
 | GET | `/api/manuals` | Admin | The firm's manuals, newest first |
 | GET | `/api/manuals/{id}` | Admin | One manual; poll `status` while processing |
