@@ -41,7 +41,7 @@ export function AppHeader({ homeHref }: { homeHref: string }) {
     <header className="sticky top-0 z-20 border-b-[2px] border-[var(--color-black)] bg-[var(--color-black)] text-[var(--color-white)]">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
         <Link href={homeHref} className="transition-opacity hover:opacity-80">
-          <Logo className="[&_span:last-child]:text-[var(--color-white)] [&_.bg-primary]:bg-[var(--color-white)] [&_.bg-primary]:text-[var(--color-black)]" />
+          <Logo variant="dark" />
         </Link>
 
         {currentUser && (

@@ -1,19 +1,34 @@
 import { cn } from "@/lib/utils"
 
-export function Logo({ className }: { className?: string }) {
+type LogoProps = {
+  className?: string
+  /** "dark" places the mark on a light tile so its navy stroke stays visible on black backgrounds. */
+  variant?: "light" | "dark"
+  size?: "md" | "lg"
+}
+
+export function Logo({ className, variant = "light", size = "md" }: LogoProps) {
+  const lg = size === "lg"
   return (
-    <div className={cn("flex items-center gap-2", className)}>
+    <div className={cn("flex items-center", lg ? "gap-3" : "gap-2", className)}>
       <span
         aria-hidden
-        className="flex h-8 w-8 items-center justify-center border-[2px] border-[var(--color-black)] bg-[var(--color-primary)] text-[var(--color-white)]"
+        className={cn(
+          "flex items-center justify-center border-[2px] bg-[var(--color-white)]",
+          variant === "dark" ? "border-[var(--color-white)]" : "border-[var(--color-black)]",
+          lg ? "h-14 w-14" : "h-9 w-9",
+        )}
       >
-        <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">
-          <path d="M3 21V5l9-3 9 3v16" />
-          <path d="M3 21h18" />
-          <path d="M9 21v-6h6v6" />
-        </svg>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/logo.png" alt="" className={cn("w-auto object-contain", lg ? "h-10" : "h-6")} />
       </span>
-      <span className="text-lg font-bold tracking-tight text-[var(--color-black)]">
+      <span
+        className={cn(
+          "font-bold tracking-tight",
+          variant === "dark" ? "text-[var(--color-white)]" : "text-[var(--color-black)]",
+          lg ? "text-3xl" : "text-lg",
+        )}
+      >
         FIRM<span className="text-[var(--color-primary)]">FLOW</span>
       </span>
     </div>
