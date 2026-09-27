@@ -83,7 +83,7 @@ export default function ModulePage({ params }: { params: Promise<{ id: string }>
             <Card key={section.id}>
               <CardContent className="py-5">
                 <h2 className="font-semibold text-foreground">{section.heading}</h2>
-                <p className="mt-2 leading-relaxed text-muted-foreground">{section.body}</p>
+                <p className="mt-2 whitespace-pre-line leading-relaxed text-muted-foreground">{section.body}</p>
               </CardContent>
             </Card>
           ))}
