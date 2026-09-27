@@ -37,6 +37,22 @@ def module_sort_key(m: Row) -> tuple:
     return (PRIORITY_ORDER.get(m["priority"], 9), m["ordinal"], m["title"])
 
 
+def with_firm_settings(module: Row, setting: Row | None) -> Row:
+    """A baseline module as one firm sees it: the firm's settings over the baseline defaults.
+
+    The employee view (firm_content) and the admin view (GET /api/baseline/modules)
+    both use this, so they always agree on priority, required, order, and visibility.
+    """
+    s = setting or {}
+    return {
+        **module,
+        "priority": s.get("priority") or module["priority"],
+        "is_required": module["is_required"] if s.get("is_required") is None else s["is_required"],
+        "ordinal": s["ordinal"] if s.get("ordinal") is not None else BASELINE_ORDINAL_OFFSET + module["ordinal"],
+        "is_hidden": bool(s.get("is_hidden")),
+    }
+
+
 @dataclass
 class Content:
     firm: Row
@@ -62,17 +78,10 @@ def firm_content(repo: Repo, firm_id: str) -> Content:
     base_id = baseline_firm_id(repo)
     if base_id and base_id != firm_id:
         settings = {s["module_id"]: s for s in repo.select("firm_baseline_modules", {"firm_id": firm_id})}
-        for m in repo.select("modules", {"firm_id": base_id, "status": "approved"}):
-            s = settings.get(m["id"], {})
-            if s.get("is_hidden"):
-                continue
-            baseline_modules.append({
-                **m,
-                "layer": "baseline",
-                "priority": s.get("priority") or m["priority"],
-                "is_required": m["is_required"] if s.get("is_required") is None else s["is_required"],
-                "ordinal": s["ordinal"] if s.get("ordinal") is not None else BASELINE_ORDINAL_OFFSET + m["ordinal"],
-            })
+        for row in repo.select("modules", {"firm_id": base_id, "status": "approved"}):
+            m = with_firm_settings(row, settings.get(row["id"]))
+            if not m["is_hidden"]:
+                baseline_modules.append({**m, "layer": "baseline"})
 
     modules = sorted(firm_modules + baseline_modules, key=module_sort_key)
     position = {m["id"]: i for i, m in enumerate(modules)}

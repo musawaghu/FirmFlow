@@ -18,7 +18,7 @@ from pydantic import BaseModel
 from app.auth import Profile, require_admin
 from app.db import Repo, Row, get_repo
 from app.schemas import BaselineModuleOut, OverrideOut
-from app.services.content import BASELINE_ORDINAL_OFFSET, baseline_firm_id, module_sort_key
+from app.services.content import baseline_firm_id, module_sort_key, with_firm_settings
 
 router = APIRouter(prefix="/api", tags=["baseline"])
 
@@ -82,13 +82,8 @@ def _baseline_modules(repo: Repo, firm_id: str) -> list[dict]:
 
     out = []
     for m in modules:
-        s = settings.get(m["id"], {})
         out.append({
-            **m,
-            "priority": s.get("priority") or m["priority"],
-            "is_required": m["is_required"] if s.get("is_required") is None else s["is_required"],
-            "ordinal": s["ordinal"] if s.get("ordinal") is not None else BASELINE_ORDINAL_OFFSET + m["ordinal"],
-            "is_hidden": bool(s.get("is_hidden")),
+            **with_firm_settings(m, settings.get(m["id"])),
             "passages": [
                 {**p, "is_critical": critical.get(p["id"], False), "overridden_by": overridden.get(p["id"])}
                 for p in passages
