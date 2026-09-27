@@ -191,7 +191,7 @@ gcloud run deploy firmflow-api --source backend --region us-central1 \
   --allow-unauthenticated \
   --no-cpu-throttling --min-instances=1 --max-instances=1 \
   --timeout=900 --memory=1Gi --cpu=1 \
-  --set-env-vars="^|^ENVIRONMENT=production|SUPABASE_URL=<url>|ANTHROPIC_MODEL=claude-opus-5|FRONTEND_ORIGIN=http://localhost:5173|DEMO_DATE=2026-09-28" \
+  --set-env-vars="^|^ENVIRONMENT=production|SUPABASE_URL=<url>|ANTHROPIC_MODEL=claude-opus-5|FRONTEND_ORIGIN=https://firmflow-iota.vercel.app,http://localhost:5173|DEMO_DATE=2026-09-28" \
   --set-secrets=SUPABASE_SERVICE_ROLE_KEY=SUPABASE_SERVICE_ROLE_KEY:latest,ANTHROPIC_API_KEY=ANTHROPIC_API_KEY:latest
 ```
 
@@ -232,6 +232,17 @@ What's in the app:
 - **Admin** (`/admin`): who has finished onboarding, each new hire's progress and final check, and the sections new hires miss most on the final check. The left sidebar lists the firm's modules and the AEC baseline modules: set when each is due, whether it's required, whether baseline modules are shown, and which passages are critical for the final check. The firm's own module text can be edited (it goes back to draft and is re-checked against the manual).
 
 Never commit `.env` files. The service role key must stay on the backend.
+
+### Deploy the frontend (Vercel)
+
+Live at https://firmflow-iota.vercel.app (Vercel project `firmflow`). `frontend/vercel.json` sends every path to `index.html`, so links like `/app/final-check` work on refresh. The project's production environment variables are `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` (added as `--type config`: it's public by design), and `VITE_API_URL` (the Cloud Run URL). Vite bakes them in at build time, so redeploy after changing one:
+
+```bash
+cd frontend
+vercel deploy --prod
+```
+
+The backend only answers browsers from origins in `FRONTEND_ORIGIN`. If the frontend's URL changes, add it there and redeploy the backend.
 
 ## Security and limits
 
