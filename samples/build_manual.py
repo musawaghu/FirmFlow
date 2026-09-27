@@ -1,7 +1,8 @@
-"""Render samples/manual_source.txt into a DOCX and a PDF sample manual.
+"""Render a sample source file into a DOCX and a PDF manual.
 
 Usage:
-    uv run --with python-docx --with pymupdf samples/build_manual.py
+    uv run --with python-docx --with pymupdf samples/build_manual.py            # Studio Meridian manual
+    uv run --with python-docx --with pymupdf samples/build_manual.py baseline   # FIRM FLOW AEC Baseline Guide
 
 Source format, one construct per line:
     TITLE / SUBTITLE <text>   cover lines
@@ -17,6 +18,7 @@ Source format, one construct per line:
 
 import html
 import re
+import sys
 from pathlib import Path
 
 import pymupdf as fitz
@@ -27,8 +29,11 @@ from docx.oxml.ns import qn
 from docx.shared import Inches, Pt
 
 HERE = Path(__file__).parent
-SOURCE = HERE / "manual_source.txt"
-OUT_STEM = HERE / "studio_meridian_manual"
+# name -> (source, output stem, footer label)
+DOCUMENTS = {
+    "firm": (HERE / "manual_source.txt", HERE / "studio_meridian_manual", "Studio Meridian Employee Handbook"),
+    "baseline": (HERE / "aec_baseline_source.txt", HERE / "aec_baseline_guide", "FIRM FLOW AEC Baseline Guide"),
+}
 
 NUMBERED = re.compile(r"^(\d+)\.\s+(.*)$")
 
@@ -76,10 +81,10 @@ def parse(text):
 # DOCX
 # ---------------------------------------------------------------------------
 
-def add_page_number_footer(section):
+def add_page_number_footer(section, footer):
     p = section.footer.paragraphs[0]
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    p.add_run("Studio Meridian Employee Handbook  |  Page ")
+    p.add_run(f"{footer}  |  Page ")
     run = p.add_run()
     for tag, text in (("begin", None), (None, "PAGE"), ("end", None)):
         if tag:
@@ -92,11 +97,11 @@ def add_page_number_footer(section):
         run._r.append(el)
 
 
-def build_docx(blocks, path):
+def build_docx(blocks, path, footer):
     doc = Document()
     doc.styles["Normal"].font.name = "Calibri"
     doc.styles["Normal"].font.size = Pt(11)
-    add_page_number_footer(doc.sections[0])
+    add_page_number_footer(doc.sections[0], footer)
 
     for kind, payload in blocks:
         if kind == "title":
@@ -197,7 +202,7 @@ def chunk_html(blocks):
     return [c for c in chunks if c]
 
 
-def build_pdf(blocks, path):
+def build_pdf(blocks, path, footer):
     page = fitz.paper_rect("letter")
     content = page + (54, 54, -54, -72)
     writer = fitz.DocumentWriter(str(path))
@@ -213,17 +218,18 @@ def build_pdf(blocks, path):
 
     doc = fitz.open(path)
     for i, pg in enumerate(doc, start=1):
-        label = f"Studio Meridian Employee Handbook  |  Page {i}"
+        label = f"{footer}  |  Page {i}"
         pg.insert_text((page.width / 2 - 110, page.height - 36), label, fontsize=8)
     doc.saveIncr()
 
 
 def main():
-    blocks = parse(SOURCE.read_text())
-    build_docx(blocks, OUT_STEM.with_suffix(".docx"))
-    build_pdf(blocks, OUT_STEM.with_suffix(".pdf"))
-    pages = fitz.open(OUT_STEM.with_suffix(".pdf")).page_count
-    print(f"Wrote {OUT_STEM.name}.docx and {OUT_STEM.name}.pdf ({pages} pages)")
+    source, out_stem, footer = DOCUMENTS[sys.argv[1] if len(sys.argv) > 1 else "firm"]
+    blocks = parse(source.read_text())
+    build_docx(blocks, out_stem.with_suffix(".docx"), footer)
+    build_pdf(blocks, out_stem.with_suffix(".pdf"), footer)
+    pages = fitz.open(out_stem.with_suffix(".pdf")).page_count
+    print(f"Wrote {out_stem.name}.docx and {out_stem.name}.pdf ({pages} pages)")
 
 
 if __name__ == "__main__":

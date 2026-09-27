@@ -93,3 +93,13 @@ def test_card_availability_rules(directory):
 def test_mailto_without_draft(directory):
     card = directory.card(directory.ids["priya"], "", THURSDAY, sender="Alex Rivera")
     assert unquote(card["mailto"].split("body=")[1]) == "Hi Priya,\n\nThanks,\nAlex Rivera"
+
+
+def test_demo_date_pins_today(directory, monkeypatch):
+    from app.config import Settings
+    from app.services import directory as directory_module
+
+    monkeypatch.setattr(directory_module, "get_settings", lambda: Settings(demo_date=THURSDAY))
+    assert directory.today() == THURSDAY
+    monkeypatch.setattr(directory_module, "get_settings", lambda: Settings(demo_date=""))
+    assert directory.today() != THURSDAY or date.today() == THURSDAY  # empty means the real date

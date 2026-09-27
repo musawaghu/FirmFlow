@@ -26,9 +26,11 @@ from pydantic import BaseModel, Field
 from app.services.enhancer import EnhancementResult
 from app.services.llm import LLMError, structured_call
 from app.services.parser import SourceSection
+from app.services.quotes import locate_quote
 
 MAX_TOKENS = 64_000
 EFFORT = "high"
+DEADLINE = 300.0  # seconds; one batch of passages
 BATCH_SIZE = 40  # passages per model call
 
 
@@ -304,21 +306,6 @@ def _user_prompt(batch: list[PassageInput], ids: list[str]) -> str:
     )
 
 
-def _locate(quote: str, p: PassageInput) -> str | None:
-    """Find the model's quote in the passage, tolerating case and whitespace differences."""
-    for text in (p.content, p.heading or ""):
-        if quote in text:
-            return quote
-    words = quote.split()
-    if not words:
-        return None
-    pattern = re.compile(r"\s+".join(re.escape(w) for w in words), re.IGNORECASE)
-    for text in (p.content, p.heading or ""):
-        if m := pattern.search(text):
-            return m.group()
-    return None
-
-
 def _model_check(batch, result: GroundingResult, *, client, model) -> None:
     ids = [f"P{i + 1}" for i in range(len(batch))]
     by_id = dict(zip(ids, batch))
@@ -331,6 +318,7 @@ def _model_check(batch, result: GroundingResult, *, client, model) -> None:
             effort=EFFORT,
             client=client,
             model=model,
+            deadline=DEADLINE,
         )
     except LLMError as exc:
         raise GroundingError(str(exc)) from exc
@@ -344,7 +332,7 @@ def _model_check(batch, result: GroundingResult, *, client, model) -> None:
             result.warnings.append(f"The model reported an unknown passage {span.passage_id!r}")
             continue
         grounding = result.passages[p.key]
-        located = _locate(span.text, p)
+        located = locate_quote(span.text, p.content, p.heading or "")
         # Keep unlocated reports too: a real problem with a sloppy quote still
         # needs the admin's eyes, it just can't be highlighted.
         text = located or span.text

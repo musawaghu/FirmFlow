@@ -15,6 +15,7 @@ from __future__ import annotations
 import io
 import re
 import unicodedata
+import zipfile
 from collections import Counter
 from dataclasses import dataclass, field
 
@@ -27,6 +28,9 @@ from docx.text.paragraph import Paragraph
 pymupdf.no_recommend_layout()  # silence the stdout hint printed by find_tables
 
 MAX_PAGES = 200
+# A DOCX is a zip archive; refuse ones that unpack far larger than any real manual (zip bombs).
+MAX_DOCX_UNZIPPED_BYTES = 200 * 1024 * 1024
+MAX_DOCX_ENTRIES = 5000
 
 BULLET_CHARS = "•◦▪▫‣∙●○■□–"
 LIGATURES = {"ﬀ": "ff", "ﬁ": "fi", "ﬂ": "fl", "ﬃ": "ffi", "ﬄ": "ffl", "ﬅ": "st", "ﬆ": "st"}
@@ -363,7 +367,18 @@ def _heading_levels(lines: list[_Line], body_size: float, repeated: set[str]) ->
 # DOCX
 # ---------------------------------------------------------------------------
 
+def _check_docx_archive(data: bytes) -> None:
+    try:
+        with zipfile.ZipFile(io.BytesIO(data)) as archive:
+            entries = archive.infolist()
+    except zipfile.BadZipFile as exc:
+        raise ParseError("Could not open DOCX: the file is damaged") from exc
+    if len(entries) > MAX_DOCX_ENTRIES or sum(e.file_size for e in entries) > MAX_DOCX_UNZIPPED_BYTES:
+        raise ParseError("This DOCX is too large to process")
+
+
 def _parse_docx(data: bytes) -> ParsedManual:
+    _check_docx_archive(data)
     try:
         doc = Document(io.BytesIO(data))
     except Exception as exc:  # python-docx raises several types for bad files

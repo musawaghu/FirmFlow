@@ -13,6 +13,7 @@ import uuid
 from app.db import Repo, Row
 from app.services.enhancer import EnhanceError, enhance_manual
 from app.services.grounding import GroundingError, check_enhancement
+from app.services.overrides import OverrideError, OverrideResult, refresh_overrides
 from app.services.parser import ParsedManual, SourceSection
 
 log = logging.getLogger(__name__)
@@ -44,7 +45,8 @@ def load_sections(repo: Repo, manual_id: str) -> tuple[list[SourceSection], dict
 
 
 def clear_outputs(repo: Repo, manual_id: str) -> None:
-    """Remove draft modules, passages, and issues from an earlier run."""
+    """Remove draft modules, passages, issues, and baseline overrides from an earlier run."""
+    repo.delete("baseline_overrides", {"manual_id": manual_id})
     module_ids = [m["id"] for m in repo.select("modules", {"manual_id": manual_id})]
     repo.delete("module_passages", {"module_id": module_ids})
     repo.delete("modules", {"manual_id": manual_id})
@@ -114,6 +116,12 @@ def process_manual(repo: Repo, manual: Row, module_topics: list[str] | None = No
         repo.insert("module_passages", passage_rows)
         repo.insert("issues", issue_rows)
 
+        # Not fatal: the drafts are still useful, and the admin can re-run detection.
+        try:
+            overrides = refresh_overrides(repo, manual)
+        except OverrideError as exc:
+            overrides = OverrideResult(warnings=[f"Baseline override detection failed: {exc}"])
+
         repo.update("manuals", manual_id, {
             "status": "processed",
             "error": None,
@@ -121,10 +129,11 @@ def process_manual(repo: Repo, manual: Row, module_topics: list[str] | None = No
                 "module_topics": module_topics or [],
                 "unused_section_ids": [section_ids[o] for o in enhancement.unused_section_ids],
                 "omissions": [{"section_id": section_ids[o.section_id], "text": o.text} for o in grounding.omissions],
-                "warnings": enhancement.warnings + grounding.warnings,
+                "warnings": enhancement.warnings + grounding.warnings + overrides.warnings,
+                "baseline_overrides": len(overrides.overrides),
                 "model": enhancement.model,
-                "input_tokens": enhancement.input_tokens + grounding.input_tokens,
-                "output_tokens": enhancement.output_tokens + grounding.output_tokens,
+                "input_tokens": enhancement.input_tokens + grounding.input_tokens + overrides.input_tokens,
+                "output_tokens": enhancement.output_tokens + grounding.output_tokens + overrides.output_tokens,
             },
         })
     except (EnhanceError, GroundingError) as exc:

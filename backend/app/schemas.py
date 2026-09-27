@@ -52,10 +52,54 @@ class ModuleOut(_Out):
     passages: list[PassageOut]
 
 
+class PassageRef(BaseModel):
+    passage_id: str
+    heading: str | None
+    module_id: str
+    module_title: str
+
+
+class OverrideOut(_Out):
+    """A firm passage that replaces a baseline passage once the admin confirms it."""
+    id: str
+    status: str  # proposed | confirmed | dismissed
+    difference: str
+    firm_excerpt: str
+    baseline_excerpt: str
+    firm_passage: PassageRef
+    baseline_passage: PassageRef
+
+
 class ReviewOut(BaseModel):
     manual: ManualOut
     sections: list[SectionOut]
     modules: list[ModuleOut]
+    overrides: list[OverrideOut] = []
+
+
+# ---------------------------------------------------------------------------
+# AEC baseline (admin): shared modules and this firm's settings for them
+# ---------------------------------------------------------------------------
+
+class BaselinePassageOut(_Out):
+    id: str
+    ordinal: int
+    heading: str | None
+    content: str
+    kind: str
+    is_critical: bool  # for this firm
+    overridden_by: str | None = None  # confirmed override id, if the firm's rule replaces this passage
+
+
+class BaselineModuleOut(_Out):
+    id: str
+    title: str
+    summary: str | None
+    priority: str  # this firm's setting, or the baseline default
+    is_required: bool
+    ordinal: int
+    is_hidden: bool
+    passages: list[BaselinePassageOut]
 
 
 class IssueOut(_Out):
@@ -85,6 +129,11 @@ class EmployeePassageOut(_Out):
     heading: str | None
     content: str
     kind: str
+    # Baseline passage replaced by the firm's own rule: the content above is the firm's,
+    # firm_note says so, and firm_passage_id links to it in the firm's module.
+    overridden_by_firm: bool = False
+    firm_note: str | None = None
+    firm_passage_id: str | None = None
 
 
 class ProgressOut(_Out):
@@ -96,6 +145,7 @@ class ProgressOut(_Out):
 
 class EmployeeModuleOut(_Out):
     id: str
+    layer: str = "firm"  # firm | baseline (shared AEC content)
     title: str
     summary: str | None
     priority: str
@@ -224,6 +274,7 @@ class UnansweredOut(_Out):
 
 class ModuleStatusOut(BaseModel):
     module_id: str
+    layer: str = "firm"  # firm | baseline
     title: str
     priority: str
     is_required: bool

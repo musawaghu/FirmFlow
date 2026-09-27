@@ -12,7 +12,10 @@ from pydantic import BaseModel
 
 from app.auth import Profile, require_admin
 from app.db import Repo, Row, Storage, get_repo, get_storage
-from app.schemas import IssueOut, ManualOut, ReviewOut
+from app.ratelimit import rate_limit
+from app.routers.baseline import override_views
+from app.schemas import IssueOut, ManualOut, OverrideOut, ReviewOut
+from app.services.overrides import OverrideError, refresh_overrides
 from app.services.parser import ParseError, parse_manual
 from app.services.processing import has_approved_modules, process_manual, save_sections
 
@@ -60,7 +63,7 @@ def _pages(section: Row) -> str | None:
 # Endpoints
 # ---------------------------------------------------------------------------
 
-@router.post("", status_code=status.HTTP_201_CREATED, response_model=ManualOut)
+@router.post("", status_code=status.HTTP_201_CREATED, response_model=ManualOut, dependencies=[Depends(rate_limit("upload"))])
 def upload_manual(
     file: UploadFile = File(...),
     title: str | None = Form(default=None),
@@ -123,7 +126,8 @@ def get_manual(manual_id: str, profile: Profile = Depends(require_admin), repo: 
     return _get_manual(repo, profile, manual_id)
 
 
-@router.post("/{manual_id}/process", status_code=status.HTTP_202_ACCEPTED, response_model=ManualOut)
+@router.post("/{manual_id}/process", status_code=status.HTTP_202_ACCEPTED, response_model=ManualOut,
+             dependencies=[Depends(rate_limit("process"))])
 def start_processing(
     manual_id: str,
     background_tasks: BackgroundTasks,
@@ -164,6 +168,7 @@ def review_manual(manual_id: str, profile: Profile = Depends(require_admin), rep
         "manual": manual,
         "sections": sections,
         "modules": [{**m, "passages": by_module.get(m["id"], [])} for m in modules],
+        "overrides": override_views(repo, repo.select("baseline_overrides", {"manual_id": manual_id}, order="created_at")),
     }
 
 
@@ -193,3 +198,34 @@ def list_issues(
         })
     # Keep the manual's reading order.
     return sorted(out, key=lambda i: sections[i["source_section_id"]]["ordinal"] if i.get("source_section_id") in sections else 1 << 30)
+
+
+@router.get("/{manual_id}/overrides", response_model=list[OverrideOut])
+def list_overrides(
+    manual_id: str,
+    override_status: Literal["proposed", "confirmed", "dismissed"] | None = Query(default=None, alias="status"),
+    profile: Profile = Depends(require_admin),
+    repo: Repo = Depends(get_repo),
+):
+    """Where this manual's passages state a different practice than the AEC baseline."""
+    _get_manual(repo, profile, manual_id)
+    filters = {"manual_id": manual_id}
+    if override_status:
+        filters["status"] = override_status
+    return override_views(repo, repo.select("baseline_overrides", filters, order="created_at"))
+
+
+@router.post("/{manual_id}/overrides/detect", response_model=list[OverrideOut], dependencies=[Depends(rate_limit("detect_overrides"))])
+def detect_manual_overrides(manual_id: str, profile: Profile = Depends(require_admin), repo: Repo = Depends(get_repo)):
+    """Compare this manual's passages with the AEC baseline again, e.g. after the baseline changed.
+
+    Replaces earlier proposals; confirmed and dismissed overrides keep their decision.
+    """
+    manual = _get_manual(repo, profile, manual_id)
+    if manual["status"] != "processed":
+        raise HTTPException(status.HTTP_409_CONFLICT, "Process the manual first")
+    try:
+        refresh_overrides(repo, manual)
+    except OverrideError as exc:
+        raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, f"Could not compare with the baseline: {exc}") from exc
+    return override_views(repo, repo.select("baseline_overrides", {"manual_id": manual_id}, order="created_at"))

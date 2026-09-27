@@ -27,11 +27,11 @@ export default function ModulePage({ params }: { params: Promise<{ id: string }>
   const module = modules.find((m) => m.id === id)
   if (!module) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-[var(--color-bg)]">
         <AppHeader homeHref="/dashboard" />
         <main className="mx-auto max-w-3xl px-4 py-16 text-center sm:px-6">
-          <h1 className="text-xl font-semibold text-foreground">Module not found</h1>
-          <p className="mt-2 text-muted-foreground">This module may have been removed.</p>
+          <h1 className="text-xl font-semibold text-[var(--color-black)]">Module not found</h1>
+          <p className="mt-2 text-[var(--color-black)]/70">This module may have been removed.</p>
           <Button render={<Link href="/dashboard" />} className="mt-6">
             Back to dashboard
           </Button>
@@ -44,13 +44,13 @@ export default function ModulePage({ params }: { params: Promise<{ id: string }>
   const moduleProgress = progress.modules[module.id]
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[var(--color-bg)]">
       <AppHeader homeHref="/dashboard" />
 
       <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
         <Link
           href="/dashboard"
-          className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+          className="text-sm font-medium text-[var(--color-black)]/70 transition-colors hover:text-[var(--color-black)]"
         >
           ← Back to dashboard
         </Link>
@@ -59,16 +59,16 @@ export default function ModulePage({ params }: { params: Promise<{ id: string }>
           <Badge variant="secondary" className="font-normal">
             {module.category}
           </Badge>
-          {module.day1 && <Badge className="bg-accent text-accent-foreground">Day 1</Badge>}
-          <span className="text-sm text-muted-foreground">{module.estimatedMinutes} min read</span>
+          {module.day1 && <Badge className="bg-[var(--color-secondary)] text-[var(--color-black)]">Day 1</Badge>}
+          <span className="text-sm text-[var(--color-black)]/70">{module.estimatedMinutes} min read</span>
         </div>
 
-        <h1 className="mt-3 text-2xl font-bold text-foreground sm:text-3xl">{module.title}</h1>
-        <p className="mt-2 text-pretty leading-relaxed text-muted-foreground">{module.summary}</p>
+        <h1 className="mt-3 text-3xl font-bold text-[var(--color-black)] sm:text-4xl" style={{ fontFamily: 'var(--font-title)' }}>{module.title}</h1>
+        <p className="mt-2 text-pretty leading-relaxed text-[var(--color-black)]/75">{module.summary}</p>
 
         {moduleProgress?.completed && (
-          <div className="mt-4 flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/5 px-4 py-3 text-sm text-foreground">
-            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground">
+          <div className="mt-4 flex items-center gap-2 border-[2px] border-[var(--color-primary)] bg-[var(--color-primary)]/10 px-4 py-3 text-sm text-[var(--color-black)]">
+            <span className="flex h-5 w-5 items-center justify-center bg-[var(--color-primary)] text-[var(--color-white)]">
               <svg viewBox="0 0 24 24" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round">
                 <path d="M20 6 9 17l-5-5" />
               </svg>

@@ -8,19 +8,16 @@ from app.auth import Profile, require_admin
 from app.db import Repo, get_repo
 from app.routers.quiz import section_links
 from app.schemas import AdminProgressOut, FailedQuestionOut, UnansweredOut
+from app.services.content import firm_content
 from app.services.progress import final_check_unlocked, required_progress
 
 router = APIRouter(prefix="/api/admin", tags=["admin"])
-
-PRIORITY_ORDER = {"day_1": 0, "week_1": 1, "later": 2}
-
 
 @router.get("/progress", response_model=AdminProgressOut)
 def progress(profile: Profile = Depends(require_admin), repo: Repo = Depends(get_repo)):
     """Onboarding progress for every employee in the firm, alphabetical."""
     employees = repo.select("profiles", {"firm_id": profile.firm_id, "role": "employee"}, order="full_name")
-    modules = repo.select("modules", {"firm_id": profile.firm_id, "status": "approved"})
-    modules.sort(key=lambda m: (PRIORITY_ORDER.get(m["priority"], 9), m["ordinal"], m["title"]))
+    modules = firm_content(repo, profile.firm_id).modules
     ids = [e["id"] for e in employees]
     progress_rows = repo.select("module_progress", {"profile_id": ids})
     attempts = repo.select("quiz_attempts", {"profile_id": ids}, order="started_at")
@@ -53,7 +50,7 @@ def progress(profile: Profile = Depends(require_admin), repo: Repo = Depends(get
             "required_modules": required,
             "completed_required": completed,
             "modules": [
-                {"module_id": m["id"], "title": m["title"], "priority": m["priority"], "is_required": m["is_required"],
+                {"module_id": m["id"], "layer": m["layer"], "title": m["title"], "priority": m["priority"], "is_required": m["is_required"],
                  "status": status_by_module.get(m["id"], "not_started")}
                 for m in modules
             ],

@@ -16,6 +16,10 @@ DEFAULTS = {
     "quiz_questions": {"status": "draft", "choices": None, "correct_choice": None, "rubric": None},
     "quiz_attempts": {"status": "in_progress", "score": None, "completed_at": None, "question_ids": []},
     "quiz_answers": {"try_number": 1, "selected_choice": None, "answer_text": None, "feedback": None},
+    "firms": {"is_baseline": False, "default_contact_id": None, "timezone": "America/Los_Angeles"},
+    "firm_baseline_modules": {"priority": None, "is_required": None, "ordinal": None, "is_hidden": False},
+    "firm_baseline_passages": {"is_critical": False},
+    "baseline_overrides": {"status": "proposed", "manual_id": None, "reviewed_by": None, "reviewed_at": None},
 }
 
 
@@ -77,9 +81,6 @@ class FakeStorage:
 
     def upload(self, path, data, content_type):
         self.files[path] = (data, content_type)
-
-    def download(self, path):
-        return self.files[path][0]
 
     def remove(self, path):
         self.files.pop(path, None)

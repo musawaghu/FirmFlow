@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FirmFlow | Modules</title>
+  <meta name="description" content="Employee onboarding modules and required learning track for the FirmFlow portal." />
+  <link rel="icon" href="assets/logo.png" type="image/png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Fira+Sans:wght@400;500;600;700&family=Overpass:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/modules.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand" aria-label="FirmFlow home">
+      <span class="brand-mark" aria-label="FirmFlow logo"></span>
+      <div>
+        <strong>Firm<span class="flow-word">Flow</span></strong>
+        <small>Employee portal</small>
+      </div>
+    </div>
+
+    <nav class="main-nav" aria-label="Main navigation">
+      <a href="index.html">Dashboard</a>
+      <a href="documents.html">Documents</a>
+      <a class="active" href="modules.html">Modules</a>
+    </nav>
+
+    <button class="button secondary small" type="button">Sign out</button>
+  </header>
+
+  <main class="page-shell modules-page">
+    <div class="page-header">
+      <div>
+        <div class="breadcrumbs" aria-label="Breadcrumbs">
+          <span>Portal</span>
+          <span>/</span>
+          <span>Modules</span>
+        </div>
+        <h1>Required onboarding</h1>
+      </div>
+      <a class="button primary" href="module-detail.html?id=welcome">Continue learning</a>
+    </div>
+
+    <section class="module-folder" aria-label="Training modules overview">
+      <div class="folder-tabs" role="tablist" aria-label="Module status tabs">
+        <button class="folder-tab" type="button" role="tab" aria-selected="false">Started</button>
+        <button class="folder-tab active" type="button" role="tab" aria-selected="true">In progress</button>
+        <button class="folder-tab" type="button" role="tab" aria-selected="false">Completed</button>
+      </div>
+
+      <div class="folder-panel">
+        <div class="folder-panel-header">
+          <h2>Current modules</h2>
+          <a href="#">View all</a>
+        </div>
+
+        <div class="module-stack" id="module-list"></div>
+
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const MODULE_ORDER = [
+      { id: 'welcome', title: 'Welcome to Studio Meridian', detail: 'Required · Day 1 · 3 passages' },
+      { id: 'culture', title: 'Company Culture &amp; Handbook', detail: 'Required · Day 1 · 2 passages' },
+      { id: 'policies', title: 'Policies', detail: 'Required · Day 1 · 4 passages' },
+      { id: 'technology', title: 'Technology Guide &amp; Training', detail: 'Required · Day 1 · 4 passages' },
+      { id: 'operations', title: 'Operations', detail: 'Required · Day 1 · 3 passages' },
+      { id: 'people', title: 'Company People', detail: 'Required · Week 1 · 2 passages' },
+      { id: 'payroll-benefits', title: 'Payroll &amp; Benefits', detail: 'Required · Week 1 · 3 passages' },
+      { id: 'security', title: 'Security policy acknowledgment', detail: 'Required · Week 1 · 2 passages' }
+    ];
+
+    const STORAGE_KEY = 'firmflow_module_progress_v1';
+
+    function getProgress() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+      } catch (error) {
+        return {};
+      }
+    }
+
+    function setProgress(progress) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+    }
+
+    function getStatus(moduleId) {
+      return getProgress()[moduleId] || 'not_started';
+    }
+
+    function isPreviousComplete(moduleIndex) {
+      for (let i = 0; i < moduleIndex; i += 1) {
+        if (getStatus(MODULE_ORDER[i].id) !== 'completed') {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    function canOpen(moduleId) {
+      const state = getStatus(moduleId);
+      if (state === 'completed' || state === 'in_progress') {
+        return true;
+      }
+
+      const moduleIndex = MODULE_ORDER.findIndex(item => item.id === moduleId);
+      return moduleIndex === 0 || isPreviousComplete(moduleIndex);
+    }
+
+    function labelForState(moduleId) {
+      const state = getStatus(moduleId);
+      if (state === 'completed') return 'Completed';
+      if (state === 'in_progress') return 'In progress';
+      if (canOpen(moduleId)) return 'Not started';
+      return 'Locked';
+    }
+
+    function classForState(moduleId) {
+      const state = getStatus(moduleId);
+      if (state === 'completed') return 'done';
+      if (state === 'in_progress') return 'review';
+      if (canOpen(moduleId)) return 'neutral';
+      return 'locked';
+    }
+
+    const list = document.getElementById('module-list');
+    list.innerHTML = MODULE_ORDER.map((module, index) => {
+      const status = getStatus(module.id);
+      const isCompleted = status === 'completed';
+      const isLocked = !canOpen(module.id) && !isCompleted;
+      const label = labelForState(module.id);
+      const tagClass = classForState(module.id);
+
+      if (isCompleted) {
+        return `
+          <article class="module-card module-card--completed">
+            <div class="module-copy">
+              <strong>${module.title}</strong>
+              <span>${module.detail}</span>
+            </div>
+            <span class="inline-tag done" aria-disabled="true">Completed</span>
+          </article>
+        `;
+      }
+
+      const href = isLocked ? '#' : `module-detail.html?id=${module.id}`;
+      const cardClass = isLocked ? 'module-card module-card--locked' : 'module-card';
+      const tagMarkup = isLocked
+        ? `<span class="inline-tag locked">Locked</span>`
+        : `<a class="inline-tag ${tagClass}" href="${href}">${label}</a>`;
+
+      return `
+        <article class="${cardClass}">
+          <a class="module-card-hitarea" href="${href}" aria-disabled="${isLocked}">
+            <div class="module-copy">
+              <strong>${module.title}</strong>
+              <span>${module.detail}</span>
+            </div>
+          </a>
+          ${tagMarkup}
+        </article>
+      `;
+    }).join('');
+
+    const links = document.querySelectorAll('.module-card-hitarea, .inline-tag');
+    links.forEach((element) => {
+      const href = element.getAttribute('href');
+      if (!href || href === '#') {
+        element.addEventListener('click', (event) => {
+          event.preventDefault();
+        });
+      }
+    });
+
+    if (!getProgress().welcome) {
+      const progress = getProgress();
+      progress.welcome = 'in_progress';
+      setProgress(progress);
+    }
+  </script>
+</body>
+</html>
