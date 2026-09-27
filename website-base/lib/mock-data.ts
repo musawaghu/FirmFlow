@@ -122,6 +122,7 @@ export const modules: Module[] = [
     summary: "Log hours, submit timesheets, and understand project billing codes.",
     estimatedMinutes: 25,
     day1: false,
+    interactive: "ajera-timesheet",
     sections: [
       {
         id: "s1",

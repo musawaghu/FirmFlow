@@ -32,7 +32,7 @@ export interface Module {
   estimatedMinutes: number
   day1: boolean
   /** Optional interactive simulator rendered above the quiz, e.g. "revit-open" */
-  interactive?: "revit-open"
+  interactive?: "revit-open" | "ajera-timesheet"
   sections: ModuleSection[]
   quiz: QuizQuestion[]
 }

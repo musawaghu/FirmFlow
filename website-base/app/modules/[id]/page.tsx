@@ -7,6 +7,7 @@ import { useStore } from "@/lib/store"
 import { AppHeader } from "@/components/app-header"
 import { ModuleQuiz } from "@/components/module-quiz"
 import { RevitSimulator } from "@/components/revit-simulator"
+import { AjeraSimulator } from "@/components/ajera-simulator"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
@@ -92,6 +93,11 @@ export default function ModulePage({ params }: { params: Promise<{ id: string }>
         {module.interactive === "revit-open" && (
           <div className="mt-8">
             <RevitSimulator />
+          </div>
+        )}
+        {module.interactive === "ajera-timesheet" && (
+          <div className="mt-8">
+            <AjeraSimulator />
           </div>
         )}
 
