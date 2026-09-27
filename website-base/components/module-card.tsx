@@ -14,22 +14,20 @@ export function ModuleCard({
   const completed = progress?.completed
   return (
     <Link href={`/modules/${module.id}`} className="group block">
-      <Card className="flex h-full flex-col gap-3 p-5 transition-all hover:border-primary/50 hover:shadow-md">
+      <Card className="flex h-full flex-col gap-4 p-4 transition-colors hover:bg-[var(--color-offwhite)]">
         <div className="flex items-start justify-between gap-3">
           <div className="flex flex-wrap items-center gap-2">
             <Badge variant="secondary" className="font-normal">
               {module.category}
             </Badge>
-            {module.day1 && (
-              <Badge className="bg-accent text-accent-foreground">Day 1</Badge>
-            )}
+            {module.day1 && <Badge className="bg-[var(--color-secondary)] text-[var(--color-black)]">Day 1</Badge>}
           </div>
           <span
             className={cn(
-              "flex h-6 items-center rounded-full px-2 text-xs font-medium",
+              "flex h-6 items-center border-[2px] border-[var(--color-black)] px-2 text-[11px] font-semibold uppercase tracking-wide",
               completed
-                ? "bg-primary/10 text-primary"
-                : "bg-muted text-muted-foreground",
+                ? "bg-[var(--color-primary)] text-[var(--color-white)]"
+                : "bg-[var(--color-offwhite)] text-[var(--color-black)]",
             )}
           >
             {completed ? "Completed" : "Not started"}
@@ -37,16 +35,16 @@ export function ModuleCard({
         </div>
 
         <div className="flex-1">
-          <h3 className="font-semibold leading-snug text-foreground transition-colors group-hover:text-primary">
+          <h3 className="text-lg font-semibold leading-snug text-[var(--color-black)] transition-colors group-hover:text-[var(--color-primary)]">
             {module.title}
           </h3>
-          <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{module.summary}</p>
+          <p className="mt-2 text-sm leading-relaxed text-[var(--color-black)]/75">{module.summary}</p>
         </div>
 
-        <div className="flex items-center justify-between text-xs text-muted-foreground">
-          <span>{module.estimatedMinutes} min · {module.quiz.length} quiz questions</span>
+        <div className="flex items-center justify-between gap-2 text-[11px] font-medium uppercase tracking-wide text-[var(--color-black)]/75">
+          <span>{module.estimatedMinutes} min • {module.quiz.length} quiz questions</span>
           {completed && progress?.quizScore !== null && progress?.quizScore !== undefined && (
-            <span className="font-medium text-foreground">Quiz {progress.quizScore}%</span>
+            <span className="font-semibold text-[var(--color-black)]">Quiz {progress.quizScore}%</span>
           )}
         </div>
       </Card>

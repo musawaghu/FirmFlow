@@ -44,7 +44,7 @@ export function ModuleQuiz({
     <Card>
       <CardHeader>
         <CardTitle className="text-lg">Knowledge check</CardTitle>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-[var(--color-black)]/70">
           Answer all {questions.length} questions to complete this module.
         </p>
       </CardHeader>
@@ -53,7 +53,7 @@ export function ModuleQuiz({
           const selected = answers[q.id]
           return (
             <fieldset key={q.id} className="space-y-3" disabled={submitted}>
-              <legend className="font-medium text-foreground">
+              <legend className="font-medium text-[var(--color-black)]">
                 {qi + 1}. {q.prompt}
               </legend>
               <div className="grid gap-2">
@@ -69,19 +69,19 @@ export function ModuleQuiz({
                         !submitted && setAnswers((a) => ({ ...a, [q.id]: oi }))
                       }
                       className={cn(
-                        "flex items-center gap-3 rounded-lg border px-4 py-3 text-left text-sm transition-colors",
-                        !submitted && isSelected && "border-primary bg-primary/5",
-                        !submitted && !isSelected && "border-border hover:bg-muted/60",
-                        showState && isCorrect && "border-primary bg-primary/10 text-foreground",
-                        showState && isSelected && !isCorrect && "border-destructive bg-destructive/10",
-                        submitted && !showState && "border-border opacity-70",
+                        "flex items-center gap-3 border-[2px] border-[var(--color-black)] bg-[var(--color-white)] px-4 py-3 text-left text-sm text-[var(--color-black)] transition-colors",
+                        !submitted && isSelected && "border-[var(--color-primary)] bg-[var(--color-primary)]/10",
+                        !submitted && !isSelected && "hover:bg-[var(--color-offwhite)]",
+                        showState && isCorrect && "border-[var(--color-primary)] bg-[var(--color-primary)]/10",
+                        showState && isSelected && !isCorrect && "border-[var(--color-primary)] bg-[var(--color-primary)]/10",
+                        submitted && !showState && "opacity-70",
                       )}
                       aria-pressed={isSelected}
                     >
                       <span
                         className={cn(
-                          "flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-xs",
-                          isSelected ? "border-current" : "border-muted-foreground/40",
+                          "flex h-5 w-5 shrink-0 items-center justify-center border-[2px] border-[var(--color-black)] text-xs font-semibold",
+                          isSelected ? "bg-[var(--color-primary)] text-[var(--color-white)]" : "bg-[var(--color-white)]",
                         )}
                       >
                         {String.fromCharCode(65 + oi)}
@@ -100,11 +100,11 @@ export function ModuleQuiz({
             Submit answers
           </Button>
         ) : (
-          <div className="flex flex-col gap-4 rounded-lg border border-border bg-muted/40 p-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-4 border-[2px] border-[var(--color-black)] bg-[var(--color-offwhite)] p-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Your score</p>
-              <p className="text-2xl font-bold text-foreground">{score}%</p>
-              <p className="mt-1 text-sm text-muted-foreground">
+              <p className="text-sm text-[var(--color-black)]/70">Your score</p>
+              <p className="text-2xl font-bold text-[var(--color-black)]">{score}%</p>
+              <p className="mt-1 text-sm text-[var(--color-black)]/70">
                 {wrongQuestionIds.length === 0
                   ? "Perfect — you got everything right."
                   : `${wrongQuestionIds.length} to review. Incorrect answers are marked above.`}

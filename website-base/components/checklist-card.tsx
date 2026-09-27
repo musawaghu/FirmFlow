@@ -15,9 +15,9 @@ export function ChecklistCard({
   return (
     <Card>
       <CardHeader className="pb-3">
-        <CardTitle className="flex items-center justify-between text-base">
+        <CardTitle className="flex items-center justify-between text-base font-semibold">
           Day 1 checklist
-          <span className="text-sm font-normal text-muted-foreground">
+          <span className="text-sm font-semibold text-[var(--color-black)]">
             {done}/{items.length}
           </span>
         </CardTitle>
@@ -26,7 +26,7 @@ export function ChecklistCard({
         {items.map((item) => (
           <label
             key={item.id}
-            className="flex cursor-pointer items-start gap-3 rounded-md px-2 py-2 transition-colors hover:bg-muted/60"
+            className="flex cursor-pointer items-start gap-3 py-2 transition-colors hover:bg-[var(--color-offwhite)]"
           >
             <Checkbox
               checked={item.done}
@@ -36,8 +36,8 @@ export function ChecklistCard({
             <span
               className={
                 item.done
-                  ? "text-sm text-muted-foreground line-through"
-                  : "text-sm text-foreground"
+                  ? "text-sm text-[var(--color-black)]/60 line-through"
+                  : "text-sm text-[var(--color-black)]"
               }
             >
               {item.label}
