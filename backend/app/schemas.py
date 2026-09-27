@@ -9,6 +9,15 @@ class _Out(BaseModel):
     model_config = ConfigDict(extra="ignore")
 
 
+class MeOut(BaseModel):
+    id: str
+    full_name: str
+    email: str
+    role: str  # admin | employee
+    firm_id: str
+    firm_name: str | None
+
+
 class ManualOut(_Out):
     id: str
     title: str

@@ -7,7 +7,7 @@ from fastapi.responses import JSONResponse
 from app.config import get_settings
 from app.db import NotConfigured
 from app.ratelimit import check_ip, too_many
-from app.routers import admin, baseline, chat, manuals, modules, quiz
+from app.routers import account, admin, baseline, chat, manuals, modules, quiz
 
 logging.basicConfig(level=logging.INFO)
 
@@ -16,6 +16,7 @@ settings = get_settings()
 docs = {} if not settings.is_production else {"docs_url": None, "redoc_url": None, "openapi_url": None}
 app = FastAPI(title="FIRM FLOW API", **docs)
 
+app.include_router(account.router)
 app.include_router(manuals.router)
 app.include_router(modules.router)
 app.include_router(modules.passages_router)

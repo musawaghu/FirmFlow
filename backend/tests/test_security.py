@@ -10,7 +10,7 @@ from pydantic import BaseModel
 from app import ratelimit
 from app.config import Settings
 from app.ratelimit import Limit, RateLimiter
-from app.routers import admin, baseline, chat, manuals, modules, quiz
+from app.routers import account, admin, baseline, chat, manuals, modules, quiz
 from app.auth import get_current_profile, require_admin
 from app.services import assistant, llm, parser
 from app.services.assistant import AssistantResult, ModuleIndex, ask
@@ -26,6 +26,7 @@ from tests.test_manuals_api import docx_bytes
 # ---------------------------------------------------------------------------
 
 EXPECTED_ACCESS = {
+    ("GET", "/api/me"): "login",
     ("GET", "/api/admin/progress"): "admin",
     ("GET", "/api/admin/failed-questions"): "admin",
     ("GET", "/api/admin/unanswered"): "admin",
@@ -65,7 +66,7 @@ def _deps(dependant) -> set:
 def test_every_route_has_the_expected_access_level():
     """A new route must be added here on purpose, so none ships without a login check."""
     found = {}
-    for router in (admin.router, baseline.router, chat.router, manuals.router, modules.router, modules.passages_router, quiz.router):
+    for router in (account.router, admin.router, baseline.router, chat.router, manuals.router, modules.router, modules.passages_router, quiz.router):
         for route in router.routes:
             deps = _deps(route.dependant)
             level = "admin" if require_admin in deps else "login" if get_current_profile in deps else "public"
