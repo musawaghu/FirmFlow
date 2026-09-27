@@ -30,9 +30,107 @@ function normalizeText(value: string) {
   return value.replace(/\r\n/g, "\n").trim()
 }
 
+const MD_HEADING = /^\s{0,3}(#{1,6})\s+(.*?)\s*#*\s*$/
+const MD_RULE = /^\s{0,3}([-*_])(\s*\1){2,}\s*$/
+const MD_FENCE = /^\s{0,3}(```|~~~)/
+
+// Section bodies are displayed as plain text, so drop inline markdown syntax.
+function stripInlineMarkdown(line: string) {
+  return line
+    .replace(/!\[([^\]]*)\]\([^)]*\)/g, "$1")
+    .replace(/\[([^\]]+)\]\(([^)\s]+)[^)]*\)/g, (_, label: string, url: string) => (label === url ? url : `${label} (${url})`))
+    .replace(/`([^`]+)`/g, "$1")
+    .replace(/(\*\*|__)(?=\S)([\s\S]*?\S)\1/g, "$2")
+    .replace(/(^|[^\w*])\*(?=\S)([^*]*?\S)\*(?!\w)/g, "$1$2")
+    .replace(/(^|[^\w])_(?=\S)([^_]*?\S)_(?!\w)/g, "$1$2")
+    .replace(/~~(?=\S)([\s\S]*?\S)~~/g, "$1")
+}
+
+const MD_TABLE_ROW = /^\s*\|.*\|\s*$/
+const MD_TABLE_DIVIDER = /^\s*\|?(\s*:?-+:?\s*\|)+\s*(:?-+:?\s*)?$/
+
+function tableCells(row: string) {
+  return row.trim().replace(/^\||\|$/g, "").split("|").map((cell) => stripInlineMarkdown(cell.trim()))
+}
+
+// A pipe table becomes one bullet per row, each cell labelled with its column header.
+function tableToText(rows: string[]) {
+  const hasHeader = rows.length > 1 && MD_TABLE_DIVIDER.test(rows[1])
+  const headers = hasHeader ? tableCells(rows[0]) : []
+  return (hasHeader ? rows.slice(2) : rows)
+    .filter((row) => !MD_TABLE_DIVIDER.test(row))
+    .map((row) => "• " + tableCells(row)
+      .map((cell, i) => (headers[i] ? `${headers[i]}: ${cell}` : cell))
+      .filter(Boolean)
+      .join(" · "))
+}
+
+function cleanMarkdownBody(lines: string[]) {
+  const out: string[] = []
+  let inFence = false
+  for (let i = 0; i < lines.length; i++) {
+    const raw = lines[i]
+    if (MD_FENCE.test(raw)) {
+      inFence = !inFence
+      continue
+    }
+    if (inFence) {
+      out.push(raw)
+      continue
+    }
+    if (MD_TABLE_ROW.test(raw)) {
+      const rows: string[] = []
+      while (i < lines.length && MD_TABLE_ROW.test(lines[i])) rows.push(lines[i++])
+      i--
+      out.push(...tableToText(rows))
+      continue
+    }
+    if (MD_RULE.test(raw)) continue
+    const line = raw
+      .replace(/^\s{0,3}>\s?/, "")
+      .replace(/^(\s*)[-*+]\s+(\[[ xX]\]\s+)?/, "$1• ")
+      .replace(/^(\s*\d+[.)]\s+)\[[ xX]\]\s+/, "$1")
+    out.push(stripInlineMarkdown(line))
+  }
+  return out.join("\n").replace(/\n{3,}/g, "\n\n").trim()
+}
+
+function parseMarkdown(text: string): { title: string | null; sections: ModuleSection[] } {
+  // YAML front matter ("---" ... "---") at the top is metadata, not content.
+  const lines = normalizeText(text).replace(/^---\n[\s\S]*?\n---(\n|$)/, "").split("\n")
+  const sections: ModuleSection[] = []
+  const h1s: string[] = []
+  let heading = "Overview"
+  let body: string[] = []
+  let inFence = false
+  const flush = () => {
+    const cleaned = cleanMarkdownBody(body)
+    if (cleaned) sections.push({ id: `s-${Date.now()}-${sections.length}`, heading, body: cleaned })
+    body = []
+  }
+  for (const line of lines) {
+    if (MD_FENCE.test(line)) inFence = !inFence
+    const match = inFence ? null : MD_HEADING.exec(line)
+    if (match) {
+      flush()
+      heading = stripInlineMarkdown(match[2]) || "Overview"
+      if (match[1] === "#") h1s.push(heading)
+    } else {
+      body.push(line)
+    }
+  }
+  flush()
+  return { title: h1s.length === 1 ? h1s[0] : null, sections }
+}
+
 function makeSectionsFromText(text: string, fallbackTitle: string): ModuleSection[] {
   const normalized = normalizeText(text)
   if (!normalized) return [{ id: `s-${Date.now()}`, heading: "Overview", body: "" }]
+
+  if (normalized.split("\n").some((line) => MD_HEADING.test(line))) {
+    const { sections } = parseMarkdown(normalized)
+    if (sections.length > 0) return sections
+  }
 
   const blocks = normalized
     .split(/\n\s*\n+/)
@@ -236,11 +334,13 @@ export function ModuleEditor({
         }
       } catch {
         const sections = makeSectionsFromText(normalized, title)
-        const quiz = makeQuizFromText(normalized, title)
+        const plainText = sections.map((section) => section.body).join("\n\n")
+        const quiz = makeQuizFromText(plainText, title)
+        const markdownTitle = lowerName.endsWith(".md") || lowerName.endsWith(".markdown") ? parseMarkdown(normalized).title : null
         parsed = {
-          title,
+          title: markdownTitle || title,
           category: "Imported",
-          summary: normalized.split(/\n\s*\n+/)[0]?.slice(0, 180) || `Imported from ${fileName}.`,
+          summary: plainText.split(/\n\s*\n+/)[0]?.slice(0, 180) || `Imported from ${fileName}.`,
           estimatedMinutes: 10,
           day1: false,
           sections,

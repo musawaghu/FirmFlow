@@ -119,25 +119,14 @@ export default function AdminPage() {
           <TabsContent value="modules" className="mt-6">
             <div className="flex items-center justify-between gap-3">
               <h2 className="text-lg font-semibold text-[var(--color-black)]">Training modules</h2>
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setEditing(null)
-                    setEditorOpen(true)
-                  }}
-                >
-                  Upload modules
-                </Button>
-                <Button
-                  onClick={() => {
-                    setEditing(null)
-                    setEditorOpen(true)
-                  }}
-                >
-                  New module
-                </Button>
-              </div>
+              <Button
+                onClick={() => {
+                  setEditing(null)
+                  setEditorOpen(true)
+                }}
+              >
+                New module
+              </Button>
             </div>
 
             <div className="mt-4 grid gap-3">
