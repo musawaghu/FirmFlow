@@ -22,6 +22,11 @@ begin;
 insert into firms (id, name, slug, timezone) values
   ('5e000000-0000-4000-8000-000000000001', 'Studio Meridian Architects', 'studio-meridian', 'America/Los_Angeles');
 
+-- The shared AEC baseline every firm builds on. Its content is loaded with
+-- backend/scripts/load_baseline.py.
+insert into firms (id, name, slug, is_baseline) values
+  ('b0000000-0000-4000-8000-000000000001', 'FIRM FLOW AEC Baseline', 'firmflow-baseline', true);
+
 -- ---------------------------------------------------------------------------
 -- People (backups set in a second pass)
 -- ---------------------------------------------------------------------------

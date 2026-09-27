@@ -20,6 +20,7 @@ create type progress_status  as enum ('not_started', 'in_progress', 'completed')
 create type question_type    as enum ('multiple_choice', 'scenario');
 create type attempt_status   as enum ('in_progress', 'completed');
 create type chat_intent      as enum ('where_is', 'who_can_help', 'personal_matter', 'other');
+create type override_status  as enum ('proposed', 'confirmed', 'dismissed');
 create type project_role     as enum (
   'principal_in_charge',
   'project_manager',
@@ -40,6 +41,7 @@ create table firms (
   slug               text not null unique,
   timezone           text not null default 'America/Los_Angeles',
   default_contact_id uuid,  -- fk added after people exists
+  is_baseline        boolean not null default false,  -- the shared AEC baseline, not a real firm
   created_at         timestamptz not null default now()
 );
 
@@ -189,6 +191,56 @@ create table issues (
   created_at        timestamptz not null default now()
 );
 
+-- ---------------------------------------------------------------------------
+-- AEC baseline and firm overlay
+-- ---------------------------------------------------------------------------
+-- The baseline is the one firm row with is_baseline = true. Its manual,
+-- modules, and passages use the tables above and are shared by every firm.
+-- Each firm's choices about baseline content live in the tables below, and a
+-- firm passage can override a baseline passage: the firm's version wins.
+
+create unique index firms_one_baseline on firms (is_baseline) where is_baseline;
+
+-- A firm's settings for a baseline module. No row means the baseline defaults.
+create table firm_baseline_modules (
+  id          uuid primary key default gen_random_uuid(),
+  firm_id     uuid not null references firms (id) on delete cascade,
+  module_id   uuid not null references modules (id) on delete cascade,
+  priority    module_priority,  -- null = baseline default
+  is_required boolean,          -- null = baseline default
+  ordinal     integer,          -- null = after the firm's own modules
+  is_hidden   boolean not null default false,
+  updated_at  timestamptz not null default now(),
+  unique (firm_id, module_id)
+);
+
+-- Baseline passages a firm marks critical for its final check.
+create table firm_baseline_passages (
+  id          uuid primary key default gen_random_uuid(),
+  firm_id     uuid not null references firms (id) on delete cascade,
+  passage_id  uuid not null references module_passages (id) on delete cascade,
+  is_critical boolean not null default false,
+  unique (firm_id, passage_id)
+);
+
+-- A firm passage that states a different practice than a baseline passage.
+-- Proposed by the AI with verbatim excerpts; the firm admin confirms.
+create table baseline_overrides (
+  id                  uuid primary key default gen_random_uuid(),
+  firm_id             uuid not null references firms (id) on delete cascade,
+  manual_id           uuid references manuals (id) on delete cascade,
+  firm_passage_id     uuid not null references module_passages (id) on delete cascade,
+  baseline_passage_id uuid not null references module_passages (id) on delete cascade,
+  firm_excerpt        text not null,
+  baseline_excerpt    text not null,
+  difference          text not null,  -- for the admin; employees see a fixed note
+  status              override_status not null default 'proposed',
+  reviewed_by         uuid references profiles (id) on delete set null,
+  reviewed_at         timestamptz,
+  created_at          timestamptz not null default now(),
+  unique (firm_passage_id, baseline_passage_id)
+);
+
 create table module_progress (
   id           uuid primary key default gen_random_uuid(),
   profile_id   uuid not null references profiles (id) on delete cascade,
@@ -279,6 +331,8 @@ create index on module_progress (module_id);
 create index on quiz_questions (firm_id, status);
 create index on quiz_answers (question_id);
 create index on chat_logs (firm_id, used_fallback);
+create index on baseline_overrides (firm_id, status);
+create index on baseline_overrides (baseline_passage_id);
 
 -- ---------------------------------------------------------------------------
 -- Views
@@ -350,6 +404,9 @@ alter table quiz_questions   enable row level security;
 alter table quiz_attempts    enable row level security;
 alter table quiz_answers     enable row level security;
 alter table chat_logs        enable row level security;
+alter table firm_baseline_modules  enable row level security;
+alter table firm_baseline_passages enable row level security;
+alter table baseline_overrides     enable row level security;
 
 -- Views run with the caller's permissions so RLS still applies.
 alter view people_availability    set (security_invoker = true);

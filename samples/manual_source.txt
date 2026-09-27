@@ -18,7 +18,7 @@ SUBTITLE Rev. 3 (2017) - partially updated 2021, 2024. PLEASE DO NOT PRINT.
 10. Harassment Prevention
 11. Misc / FAQ
 
-Added 2024: 12. Your First Weeks, 13. Design Values, 14. Communication, 15. Organization Chart, 16. File Naming & Folder Structure, 17. Billing Your Hours, 18. Expense Reports, 19. Office Layout, 20. Benefits
+Added 2024: 12. Your First Weeks, 13. Design Values, 14. Communication, 15. Organization Chart, 16. File Naming & Folder Structure, 17. Billing Your Hours, 18. Expense Reports, 19. Office Layout, 20. Benefits, 21. Drawing Standards
 
 PAGEBREAK
 
@@ -562,3 +562,25 @@ Full-time employees are eligible for benefits starting the first day of the mont
 Enroll in the HR portal: https://hr.studiomeridian.example/portal. Part-time employees and interns should ask the HR Manager which benefits they are eligible for.
 
 Questions about benefits go to the HR Manager (Elena Kowalski).
+
+PAGEBREAK
+
+# 21. DRAWING STANDARDS
+
+Follow these standards on every drawing you produce, starting on your first day.
+
+The full drawing standards, title blocks, and Revit template are in \\SM-FS02\Standards\Drawing\. If something is not covered, ask the Project Architect before you guess.
+
+## Sheet numbers
+
+Studio Meridian numbers sheets like A-101: the discipline letter, a hyphen, the sheet type digit, and a two-digit sequence number. For example, A-101 is the first architectural plan sheet and A-501 is the first architectural detail sheet. Do not use the A1.01 format. Sheets numbered any other way are sent back at QA review.
+
+## Title blocks and text
+
+- Use only the Studio Meridian title block from the Revit template. Do not edit the title block family.
+- Use the text and dimension styles in the template. Do not create new ones.
+- Every sheet in an issued set must show the issue date and the issue name in the title block.
+
+## Views
+
+Name views you create for your own work with your initials first (for example, AR - Level 2 Study), as described in Section 4.4. Views on sheets use the template's view names.
