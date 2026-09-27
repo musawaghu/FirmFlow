@@ -22,7 +22,7 @@ DEMO_MODULES = [
     "Welcome to Studio Meridian: general onboarding, the studio and its work, and your first weeks",
     "Company Culture & Handbook: design values, communication channels, organization chart",
     "Policies: office policies and etiquette, confidentiality and privacy, harassment prevention",
-    "Technology Guide & Training: BIM software and standards, file naming conventions, folder structure",
+    "Technology Guide & Training: BIM software and standards, drawing standards, file naming conventions, folder structure",
     "Operations: timesheets, billing your hours, expense reports",
     "Company People: staff directory and key contacts, office layout",
     "Payroll & Benefits: payroll, benefits, paid time off, holidays",

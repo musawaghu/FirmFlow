@@ -6,7 +6,7 @@ from fastapi.responses import JSONResponse
 
 from app.config import get_settings
 from app.db import NotConfigured
-from app.routers import admin, chat, manuals, modules, quiz
+from app.routers import admin, baseline, chat, manuals, modules, quiz
 
 logging.basicConfig(level=logging.INFO)
 
@@ -24,6 +24,7 @@ app.include_router(modules.passages_router)
 app.include_router(quiz.router)
 app.include_router(chat.router)
 app.include_router(admin.router)
+app.include_router(baseline.router)
 
 
 @app.exception_handler(NotConfigured)

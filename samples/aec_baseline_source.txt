@@ -1,0 +1,143 @@
+TITLE FIRM FLOW AEC Baseline Guide
+SUBTITLE General practice for new hires at architecture and engineering firms
+SUBTITLE Draft for review by a licensed architect before use
+
+> This guide covers practice that is common across AEC firms. Your firm's own standards, policies, and procedures replace anything here that they cover. When the two differ, follow your firm.
+
+## Contents
+
+1. Getting Started at an AEC Firm
+2. Revit Worksharing Basics
+3. BIM Execution Plans
+4. File Naming Conventions
+5. Drawing Set Organization
+6. Consultant Coordination
+
+PAGEBREAK
+
+# 1. GETTING STARTED AT AN AEC FIRM
+
+Your first weeks at a design firm move fast. Projects have deadlines, senior staff are busy, and much of what you need to know is spread across servers, systems, and people. These habits help you get set up quickly and avoid the most common first-week problems.
+
+## Check your software access on day one
+
+- On your first day, sign in to every system you will use: email, chat, the file server, the timesheet system, and design software such as Revit and AutoCAD.
+- If a login fails, report it to IT the same day with the name of the system and the exact error message. Don't wait until you need the software for a deadline.
+- Design software licenses are often assigned by name. If a program opens in viewer mode or asks for a license, ask IT to assign one to you.
+
+## Getting help when people are busy
+
+- Senior staff spend much of the day in meetings, on site visits, and on calls. If the person you need is busy, send a short written message with your question and when you need an answer, instead of waiting to catch them in person.
+- Check whether the person has a backup listed in the staff directory. If your question can't wait, ask the backup.
+- If you don't know who to ask, ask the office manager or your project manager. Asking early is expected. Guessing on project work is not.
+
+## Where project information lives
+
+- Project files are usually kept on a shared file server or document management system, organized by project number. Never keep the only copy of project work on your own computer.
+- Project decisions are recorded in meeting minutes, emails, and requests for information (RFIs). When you join a project, ask your project manager where these are kept.
+
+## Drawing standards come first
+
+- Every firm has its own drawing standards: title blocks, sheet numbering, view and layer naming, text styles, and dimension styles. Find your firm's drawing standards on your first day, before you draw anything.
+- If you can't find the standards, ask your project architect or BIM manager. Don't copy settings from an old project, because they may be out of date.
+
+PAGEBREAK
+
+# 2. REVIT WORKSHARING BASICS
+
+## Central and local models
+
+On a workshared Revit project, one central model on the server holds the whole team's work. Each person works in their own local copy of the central model and synchronizes their changes with it. The central model is the single source of truth for the project. If it is damaged, the whole team can lose work.
+
+## Daily rules
+
+- Create a new local copy from the central model at the start of each work session. Don't open the central model directly to do your work.
+- Synchronize with Central regularly, and always before a break and at the end of the day.
+- When you finish for the day, relinquish the elements and worksets you borrowed so your teammates can edit them.
+- Put each element on the correct workset. If you're not sure which one, ask the project's BIM lead.
+- Never copy, move, or rename a central model in Windows File Explorer. A copied central file still behaves as a central model, and anyone who syncs with the copy sends their work to the wrong file.
+
+## Making a test copy
+
+To try an idea without affecting the team's model, open the central model with the Detach from Central option and save the detached model under a new name. A detached model is disconnected from the central model, so nothing you do in it can sync back. If your idea is approved, ask the BIM lead how to bring it into the central model.
+
+PAGEBREAK
+
+# 3. BIM EXECUTION PLANS
+
+A BIM Execution Plan (BEP) is a project document that sets out how the project team will create, share, and use building information models.
+
+## What a BEP covers
+
+- The goals and uses of the model on the project, such as coordination, quantity takeoff, or energy analysis
+- Who is responsible for each model and for the central model
+- The level of development (LOD) expected at each project phase
+- The software and versions the team will use
+- File naming, file exchange formats, and how often models are shared
+- The coordination schedule and how clashes are reviewed and resolved
+
+## Working with the BEP
+
+- The BEP is usually prepared at the start of a project by the BIM manager or the project's BIM lead and agreed with the client and consultants.
+- Read your project's BEP before you work in the model. Ask your BIM lead where it is kept.
+- If something the BEP requires doesn't match what you see in the model, tell the BIM lead. Don't change shared settings yourself.
+
+PAGEBREAK
+
+# 4. FILE NAMING CONVENTIONS
+
+Consistent file names let everyone on a project find, sort, and trust files, and they keep links between files from breaking.
+
+- Start every file name with the project number so files sort and search by project.
+- Use the same order of fields every time, for example project number, description, and version or author, separated by the same character.
+- Avoid spaces and special characters such as # % & and *. They break some software and web links.
+- Write dates as year, month, day (YYYY-MM-DD) so files sort in date order.
+- Don't use words like "final" or "new" in file names. They stop being true as soon as the next version exists.
+- Never rename a file after it has been issued outside the firm. Other people's records refer to the issued name.
+
+PAGEBREAK
+
+# 5. DRAWING SET ORGANIZATION
+
+## Sheet numbers
+
+A sheet number tells you the discipline, the type of drawing, and where the sheet falls in the set. In this guide, sheet numbers are written as the discipline letter, the sheet type digit, a period, and a two-digit sequence number. For example, A1.01 is the first architectural plan sheet.
+
+| Discipline letter | Discipline |
+| G | General |
+| C | Civil |
+| L | Landscape |
+| S | Structural |
+| A | Architectural |
+| I | Interiors |
+| P | Plumbing |
+| M | Mechanical |
+| E | Electrical |
+
+| Sheet type digit | Drawings |
+| 0 | General: symbols, legends, and notes |
+| 1 | Plans |
+| 2 | Elevations |
+| 3 | Sections |
+| 4 | Large-scale views |
+| 5 | Details |
+| 6 | Schedules and diagrams |
+
+## Set order
+
+A drawing set starts with a cover sheet and a sheet index. Sheets follow in discipline order: general sheets first, then civil, landscape, structural, architectural, and interiors, then plumbing, mechanical, and electrical. Within each discipline, sheets are in sheet number order.
+
+## Revisions
+
+When a sheet changes after it has been issued, mark the change with a revision cloud and a revision tag, and record the revision number, date, and description in the title block's revision schedule. Never issue a changed sheet without recording the revision.
+
+PAGEBREAK
+
+# 6. CONSULTANT COORDINATION
+
+Architects coordinate the work of consultants such as structural, civil, and landscape engineers and MEP (mechanical, electrical, and plumbing) engineers. Most coordination problems come from teams working from different versions of each other's work.
+
+- Linked models: consultants' models are linked into the architectural model, never imported or copied into it. Check with the BIM lead before you reload, remove, or change a link.
+- Coordination meetings: the team meets regularly to review clashes and open questions. Decisions and action items are recorded in the meeting minutes.
+- Transmittals: every set of files sent to or received from a consultant is logged with a transmittal that lists what was sent, when, and why.
+- Who communicates: formal communication with consultants goes through the project manager or project architect. Copy them on anything you send to a consultant.

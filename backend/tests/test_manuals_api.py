@@ -87,7 +87,7 @@ def test_upload_parses_and_stores(client, repo, storage):
     assert res.status_code == 201, res.text
     manual = res.json()
     assert manual["title"] == "Studio Handbook"
-    assert (manual["file_type"], manual["page_count"], manual["status"]) == ("pdf", 22, "uploaded")
+    assert (manual["file_type"], manual["page_count"], manual["status"]) == ("pdf", 23, "uploaded")
 
     path = f"{FIRM_A}/{manual['id']}.pdf"
     assert storage.files[path] == (SAMPLE_PDF, "application/pdf")
@@ -95,7 +95,7 @@ def test_upload_parses_and_stores(client, repo, storage):
     assert (stored["firm_id"], stored["uploaded_by"], stored["file_path"]) == (FIRM_A, "user-admin-a", path)
 
     sections = repo.select("source_sections", {"manual_id": manual["id"]}, order="ordinal")
-    assert len(sections) == 54
+    assert len(sections) == 58
     assert sections[8]["heading"] == "4. BIM / REVIT › 4.2 Making a test copy of a model"
     assert (sections[8]["page_start"], sections[8]["page_end"]) == (5, 5)
 
@@ -183,7 +183,7 @@ def test_process_review_and_issues(client, repo, claude_requests):
     assert "- Timesheets\n- How to Use BIM" in enhance_prompt
 
     review = client.get(f"/api/manuals/{manual['id']}/review", headers=auth()).json()
-    assert len(review["sections"]) == 54
+    assert len(review["sections"]) == 58
     assert [(m["title"], m["priority"], m["status"]) for m in review["modules"]] == [
         ("Timesheets", "day_1", "draft"),
         ("How to Use BIM", "day_1", "draft"),
