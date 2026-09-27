@@ -4,7 +4,7 @@ import pytest
 
 from app.routers import chat as chat_router
 from app.services.assistant import AssistantResult
-from app.services.content import firm_content
+from app.services.content import firm_content, with_firm_settings
 from tests.baseline_seed import seed_layered
 from tests.conftest import FIRM_A, FIRM_B, auth
 
@@ -204,3 +204,23 @@ def test_admin_progress_counts_baseline_modules(api, layered):
     assert [(m["title"], m["layer"]) for m in res["employees"][0]["modules"]] == [
         ("Technology", "firm"), ("Drawing Set Organization", "baseline"), ("Consultant Coordination", "baseline"),
     ]
+
+
+def test_firm_settings_over_baseline_defaults():
+    module = {"id": "m1", "title": "Drawing Set Organization", "priority": "week_1", "is_required": True, "ordinal": 4}
+    assert with_firm_settings(module, None) == {**module, "ordinal": 1004, "is_hidden": False}
+    setting = {"priority": "day_1", "is_required": False, "ordinal": 0, "is_hidden": True}
+    assert with_firm_settings(module, setting) == {**module, "priority": "day_1", "is_required": False, "ordinal": 0, "is_hidden": True}
+    # A setting row with only some fields keeps the baseline default for the rest.
+    assert with_firm_settings(module, {"priority": None, "is_required": None, "ordinal": None, "is_hidden": False}) == {
+        **module, "ordinal": 1004, "is_hidden": False}
+
+
+def test_employee_and_admin_views_agree_on_baseline_settings(api, layered):
+    api.patch(f"/api/baseline/modules/{layered['sets']['id']}", json={"priority": "later", "is_required": False, "ordinal": 7}, headers=auth())
+    admin = {m["id"]: m for m in api.get("/api/baseline/modules", headers=auth()).json()}
+    employee = {m["id"]: m for m in modules(api)["modules"] if m["layer"] == "baseline"}
+    assert set(employee) == set(admin)
+    for mid, m in employee.items():
+        assert (m["priority"], m["is_required"]) == (admin[mid]["priority"], admin[mid]["is_required"])
+    assert (admin[layered["sets"]["id"]]["priority"], admin[layered["sets"]["id"]]["ordinal"]) == ("later", 7)

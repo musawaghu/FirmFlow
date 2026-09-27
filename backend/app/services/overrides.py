@@ -10,7 +10,6 @@ firm's version in place of the baseline one.
 
 from __future__ import annotations
 
-import re
 import uuid
 from dataclasses import dataclass, field
 
@@ -20,6 +19,7 @@ from pydantic import BaseModel, Field
 from app.db import Repo, Row
 from app.services.content import baseline_firm_id
 from app.services.llm import LLMError, structured_call
+from app.services.quotes import locate_quote
 
 MAX_TOKENS = 32_000
 EFFORT = "high"
@@ -124,21 +124,6 @@ def _user_prompt(firm_ids, firm, baseline_ids, baseline) -> str:
     )
 
 
-def _locate(quote: str, p: PassageText) -> str | None:
-    """The quote as it appears in the passage, tolerating case and whitespace differences."""
-    for text in (p.content, p.heading or ""):
-        if quote and quote in text:
-            return quote
-    words = quote.split()
-    if not words:
-        return None
-    pattern = re.compile(r"\s+".join(re.escape(w) for w in words), re.IGNORECASE)
-    for text in (p.content, p.heading or ""):
-        if m := pattern.search(text):
-            return m.group()
-    return None
-
-
 # ---------------------------------------------------------------------------
 # Entry points
 # ---------------------------------------------------------------------------
@@ -180,7 +165,8 @@ def detect_overrides(
         if fp is None or bp is None:
             result.warnings.append(f"Dropped an override citing unknown passages {o.firm_passage_id!r} / {o.baseline_passage_id!r}")
             continue
-        firm_quote, baseline_quote = _locate(o.firm_excerpt, fp), _locate(o.baseline_excerpt, bp)
+        firm_quote = locate_quote(o.firm_excerpt, fp.content, fp.heading or "")
+        baseline_quote = locate_quote(o.baseline_excerpt, bp.content, bp.heading or "")
         if firm_quote is None or baseline_quote is None:
             result.warnings.append(f"Dropped an override whose quotes aren't in the passages: {o.difference}")
             continue
