@@ -1,9 +1,10 @@
-fastapi>=0.115
+fastapi>=0.117
+starlette>=0.48  # status.HTTP_422_UNPROCESSABLE_CONTENT / HTTP_413_CONTENT_TOO_LARGE
 uvicorn[standard]>=0.30
 python-multipart>=0.0.9
 pydantic-settings>=2.4
-supabase>=2.7
-anthropic>=1.8
-pymupdf>=1.24
+supabase>=2.16
+anthropic>=1.0
+pymupdf>=1.26.6
 python-docx>=1.1
 pytest>=8.0
