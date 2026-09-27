@@ -9,7 +9,7 @@ from app.services import enhancer, grounding, overrides, processing
 from app.services.overrides import PassageText, detect_overrides, refresh_overrides
 from tests.claude_mock import error_client, mock_client, sse
 from tests.conftest import auth
-from tests.test_baseline import layered  # noqa: F401  (fixture)
+from tests.baseline_seed import seed_layered
 from tests.test_manuals_api import ENHANCEMENT, GROUNDING, upload
 
 FIRM = [
@@ -20,6 +20,11 @@ BASE = [
     PassageText("b-sheet", "Drawing Set Organization", "Sheet numbers", "Number sheets like A1.01: discipline, sheet type, sequence."),
     PassageText("b-coord", "Consultant Coordination", "Meetings", "Attend coordination meetings."),
 ]
+
+
+@pytest.fixture
+def layered(repo):
+    return seed_layered(repo)
 
 
 def reply(*items):

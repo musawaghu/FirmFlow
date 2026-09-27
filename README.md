@@ -153,9 +153,12 @@ SUPABASE_URL=
 SUPABASE_SERVICE_ROLE_KEY=
 ANTHROPIC_API_KEY=
 ANTHROPIC_MODEL=
-FRONTEND_ORIGIN=http://localhost:5173
+FRONTEND_ORIGIN=http://localhost:5173   # comma-separate several origins
 DEMO_DATE=            # optional, YYYY-MM-DD: pins "today" for who's-in-today on contact cards
+ENVIRONMENT=development   # "production" turns off /docs and turns on HSTS
 ```
+
+In production, run uvicorn behind HTTPS with `--proxy-headers` so rate limits see the real client address.
 
 ### 3. Frontend
 
@@ -175,6 +178,27 @@ VITE_API_URL=http://localhost:8000
 ```
 
 Never commit `.env` files. The service role key must stay on the backend.
+
+## Security and limits
+
+- **Access:** every endpoint except `/api/health` needs a Supabase login, and admin endpoints need an admin profile. Every query is scoped to the caller's firm. A test (`backend/tests/test_security.py`) pins the access level of every route, so a new route can't ship unprotected by accident.
+- **Data:** Supabase row level security is on for every table with no policies, so the public anon key can't read anything; only the backend (service role key) can. The `manuals` storage bucket is private.
+- **Rate limits** (`backend/app/ratelimit.py`), answered with `429` and `Retry-After`:
+
+  | What | Limit |
+  | --- | --- |
+  | Any `/api` request | 300 per minute per IP |
+  | Assistant questions | 10 per minute and 200 per day per person |
+  | Final check answers (scenario answers are graded by Claude) | 20 per minute per person |
+  | Passage edits (re-run the grounding check) | 60 per hour per firm |
+  | Manual uploads | 20 per hour per firm |
+  | Processing a manual, detecting baseline overrides, generating the quiz | 10 per hour per firm each |
+
+  Limits are kept in memory, so they apply per backend process; several instances would need a shared store such as Redis.
+- **Claude calls are bounded:** a call gives up if the connection goes silent for 3 minutes, retries once, and has a wall-clock deadline (15 minutes to process a manual, 5 for grounding, overrides, and quiz generation, 90 seconds to grade an answer). The assistant has 60 seconds per question and falls back to the firm's default contact.
+- **Uploads:** PDF or DOCX only (checked by content, not just extension), 25 MB and 200 pages at most; DOCX files that unpack to more than 200 MB are refused.
+- **Responses:** `nosniff`, `X-Frame-Options: DENY`, `Cache-Control: no-store` and a locked-down CSP on API responses; CORS allows only `FRONTEND_ORIGIN`, without cookies.
+- **Prompt injection:** manual text and employee answers are passed to Claude as data inside tags. Enhanced text must pass the grounding check and admin review, contact cards come from directory rows, and the assistant's tools are read-only.
 
 ## API overview
 

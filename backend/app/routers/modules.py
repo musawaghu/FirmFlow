@@ -11,10 +11,11 @@ from pydantic import BaseModel, field_validator
 
 from app.auth import Profile, get_current_profile, require_admin
 from app.db import Repo, Row, get_repo
+from app.ratelimit import rate_limit
 from app.schemas import ModuleListOut, ModuleOut, PassageEditOut, ProgressOut
+from app.services.content import baseline_firm_id, firm_content
 from app.services.grounding import GroundingError, PassageInput, check_passages
 from app.services.parser import SourceSection
-from app.services.content import baseline_firm_id, firm_content
 from app.services.progress import final_check_unlocked, profile_progress, required_progress
 
 router = APIRouter(prefix="/api/modules", tags=["modules"])
@@ -145,7 +146,7 @@ def update_module(
     return _with_passages(repo, module)
 
 
-@passages_router.patch("/{passage_id}", response_model=PassageEditOut)
+@passages_router.patch("/{passage_id}", response_model=PassageEditOut, dependencies=[Depends(rate_limit("passage_edit"))])
 def update_passage(
     passage_id: str,
     body: PassageUpdate,

@@ -23,6 +23,7 @@ from app.services.llm import LLMError, structured_call
 
 MAX_TOKENS = 32_000
 EFFORT = "high"
+DEADLINE = 300.0  # seconds
 
 
 class OverrideError(Exception):
@@ -166,6 +167,7 @@ def detect_overrides(
             effort=EFFORT,
             client=client,
             model=model,
+            deadline=DEADLINE,
         )
     except LLMError as exc:
         raise OverrideError(str(exc)) from exc

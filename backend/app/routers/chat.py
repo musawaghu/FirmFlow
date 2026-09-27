@@ -5,6 +5,7 @@ from pydantic import BaseModel, Field
 
 from app.auth import Profile, get_current_profile
 from app.db import Repo, get_repo
+from app.ratelimit import rate_limit
 from app.schemas import ChatOut
 from app.services.assistant import ModuleIndex, ask
 from app.services.content import firm_content
@@ -17,7 +18,7 @@ class ChatIn(BaseModel):
     question: str = Field(min_length=1, max_length=500)
 
 
-@router.post("", response_model=ChatOut)
+@router.post("", response_model=ChatOut, dependencies=[Depends(rate_limit("chat"))])
 def chat(body: ChatIn, profile: Profile = Depends(get_current_profile), repo: Repo = Depends(get_repo)):
     """Answer a "where is" or "who can help" question with module links and contact cards."""
     directory = Directory.load(repo, profile.firm_id)

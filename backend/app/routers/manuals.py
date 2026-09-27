@@ -12,6 +12,7 @@ from pydantic import BaseModel
 
 from app.auth import Profile, require_admin
 from app.db import Repo, Row, Storage, get_repo, get_storage
+from app.ratelimit import rate_limit
 from app.routers.baseline import override_views
 from app.schemas import IssueOut, ManualOut, OverrideOut, ReviewOut
 from app.services.overrides import OverrideError, refresh_overrides
@@ -62,7 +63,7 @@ def _pages(section: Row) -> str | None:
 # Endpoints
 # ---------------------------------------------------------------------------
 
-@router.post("", status_code=status.HTTP_201_CREATED, response_model=ManualOut)
+@router.post("", status_code=status.HTTP_201_CREATED, response_model=ManualOut, dependencies=[Depends(rate_limit("upload"))])
 def upload_manual(
     file: UploadFile = File(...),
     title: str | None = Form(default=None),
@@ -125,7 +126,8 @@ def get_manual(manual_id: str, profile: Profile = Depends(require_admin), repo: 
     return _get_manual(repo, profile, manual_id)
 
 
-@router.post("/{manual_id}/process", status_code=status.HTTP_202_ACCEPTED, response_model=ManualOut)
+@router.post("/{manual_id}/process", status_code=status.HTTP_202_ACCEPTED, response_model=ManualOut,
+             dependencies=[Depends(rate_limit("process"))])
 def start_processing(
     manual_id: str,
     background_tasks: BackgroundTasks,
@@ -213,7 +215,7 @@ def list_overrides(
     return override_views(repo, repo.select("baseline_overrides", filters, order="created_at"))
 
 
-@router.post("/{manual_id}/overrides/detect", response_model=list[OverrideOut])
+@router.post("/{manual_id}/overrides/detect", response_model=list[OverrideOut], dependencies=[Depends(rate_limit("detect_overrides"))])
 def detect_manual_overrides(manual_id: str, profile: Profile = Depends(require_admin), repo: Repo = Depends(get_repo)):
     """Compare this manual's passages with the AEC baseline again, e.g. after the baseline changed.
 
