@@ -17,3 +17,8 @@ __pycache__/
 
 # Output of backend/scripts/enhance_sample.py
 enhancement_sample.json
+
+# Collector
+collector/config.yaml
+collector/*.db
+collector/*.egg-info/
