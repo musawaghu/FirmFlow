@@ -1,0 +1,25 @@
+# FirmFlow collector configuration.
+# Secrets are NOT set here. Export them in the environment instead:
+#   COLLECTOR_AUTHOR_SALT   a long random secret (16+ chars) used to pseudonymize authors
+#   COLLECTOR_API_KEY       this firm's key for the FirmFlow backend
+
+backend:
+  url: https://your-firmflow-backend.example
+
+privacy:
+  min_group_size: 5          # smallest number of distinct people a topic may describe (minimum 3)
+  raw_retention_days: 7      # how long raw text may be kept locally before deletion
+  initial_lookback_days: 30  # how far back the very first run reads
+
+# Only channels listed here are ever read. No wildcards, no DMs, no personal inboxes.
+sources:
+  - id: slack-main
+    type: slack
+    channels:
+      - C0123456789   # e.g. #revit-help
+  - id: helpdesk-mail
+    type: gmail
+    channels:
+      - help@yourfirm.example   # a shared mailbox, not an individual's inbox
+
+state_path: collector_state.db
