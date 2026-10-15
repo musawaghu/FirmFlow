@@ -217,6 +217,8 @@ Why these flags:
 | `--timeout=900` | Quiz generation holds its request open for up to 5 minutes. |
 | `--allow-unauthenticated` | The API checks Supabase logins itself. Cloud Run's own gate would block browsers. |
 
+After the demo (since 2026-10-15), the live service runs with `--min-instances=0 --cpu-throttling`, which costs about $0–2 a month at demo traffic. The first request after idle takes a few seconds to wake it, and processing a newly uploaded manual is unreliable in this mode. Before processing a new manual, re-run the deploy command above to go back to always-on.
+
 `FRONTEND_ORIGIN` takes a comma list. Once the frontend is deployed, add its URL. That's why the command uses `^|^` as the separator. After the demo, `--min-instances=0` lets the service scale to zero.
 
 ### 3. Frontend
